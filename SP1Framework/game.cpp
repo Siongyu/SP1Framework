@@ -127,6 +127,8 @@ void render()
 		break;
 	case S_GAME: renderGame();
 		break;
+	case S_MENU: renderMenu();
+		break;
 	}
 	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
 	renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -135,7 +137,12 @@ void render()
 void splashScreenWait()    // waits for time to pass in splash screen
 {
 	if (g_dElapsedTime > 10.0) // wait for 3 seconds to switch to game mode, else do nothing
-		g_eGameState = S_GAME;
+		g_eGameState = S_MENU;
+}
+
+void menu()
+{
+	processUserInput(); // process user input function
 }
 
 void gameplay()            // gameplay logic
@@ -189,6 +196,7 @@ void moveCharacter()
 		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
 	}
 }
+
 void processUserInput()
 {
 	// quits the game if player hits the escape key
@@ -205,6 +213,11 @@ void clearScreen()
 	// Clears the buffer with this colour attribute
 	g_Console.clearBuffer(0x1F);
 }
+
+// ------------------------------------------------------------- 
+// Purpose	: The different levels 
+// Input    : g_eGameState
+// Output   : void
 
 void renderSplashScreen()  // renders the splash screen
 {
@@ -253,10 +266,9 @@ void renderSplashScreen()  // renders the splash screen
 
 }
 
-void menu()
+void renderMenu()
 {
 	COORD c = g_Console.getConsoleSize();
-	processUserInput();
 
 	c.Y = 5;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
@@ -321,6 +333,7 @@ void renderFramerate()
 	c.Y = 0;
 	g_Console.writeToBuffer(c, ss.str(), 0x59);
 }
+
 void renderToScreen()
 {
 	// Writes the buffer to the console, hence you will see what you have written
