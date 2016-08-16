@@ -76,6 +76,9 @@ void getInput( void )
     g_abKeyPressed[K_RIGHT]  = isKeyPressed(VK_RIGHT);
     g_abKeyPressed[K_SPACE]  = isKeyPressed(VK_SPACE);
     g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	g_abKeyPressed[K_NEW] = isKeyPressed(0x4E);
+
+
 }
 
 //--------------------------------------------------------------
@@ -104,8 +107,11 @@ void update(double dt)
             break;
         case S_GAME: gameplay(); // gameplay logic when we are in the game
             break;
+		case S_MENU: menu(); // menu for game
+			break;
     }
 }
+
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
 //            At this point, you should know exactly what to draw onto the screen.
@@ -123,6 +129,8 @@ void render()
             break;
         case S_GAME: renderGame();
             break;
+		case S_MENU: menu();
+			break;
     }
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -131,7 +139,7 @@ void render()
 void splashScreenWait()    // waits for time to pass in splash screen
 {
     if (g_dElapsedTime > 3.0) // wait for 3 seconds to switch to game mode, else do nothing
-        g_eGameState = S_GAME;
+        g_eGameState = S_MENU;
 }
 
 void gameplay()            // gameplay logic
@@ -185,11 +193,14 @@ void moveCharacter()
         g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
     }
 }
+
 void processUserInput()
 {
     // quits the game if player hits the escape key
     if (g_abKeyPressed[K_ESCAPE])
-        g_bQuitGame = true;    
+        g_bQuitGame = true;   
+	if (g_abKeyPressed[K_NEW])
+		g_eGameState = S_GAME;
 }
 
 void clearScreen()
@@ -201,15 +212,48 @@ void clearScreen()
 void renderSplashScreen()  // renders the splash screen
 {
     COORD c = g_Console.getConsoleSize();
-    c.Y /= 3;
-    c.X = c.X / 2 - 9;
-    g_Console.writeToBuffer(c, "A game in 3 seconds", 0x03);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 20;
-    g_Console.writeToBuffer(c, "Press <Space> to change character colour", 0x09);
-    c.Y += 1;
-    c.X = g_Console.getConsoleSize().X / 2 - 9;
-    g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x09);
+
+
+	// CREATING TITLE//
+	c.Y = 3;
+	c.X = g_Console.getConsoleSize().X / 2 - 20;
+	g_Console.writeToBuffer(c, "* * * * * * * * * * * * * * * * * * * * ", 0x04);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* * * * * * * * * * * * * * * * * * * * ", 0x04);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* *   * * *   * * * *           * *   * ", 0x04);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* *   * * *   * * * * * *   * * * *   * ", 0x04);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* *   * * *   * * * * * *   * * * *   * ", 0x04);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* *           * * * * * *   * * * *   * ", 0x04);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* *   * * *   * * * * * *   * * * * * * ", 0x09);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* *   * * *   * * * * * *   * * * * * * ", 0x09);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* *   * * *   * * * *           * *   * ", 0x09);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* * * * * * * * * * * * * * * * * * * * ", 0x09);
+	c.Y += 1;
+	g_Console.writeToBuffer(c, "* * * * * * * * * * * * * * * * * * * * ", 0x09);
+
+}
+
+void menu()
+{
+	COORD c = g_Console.getConsoleSize();
+	processUserInput();
+
+	c.Y = 5;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x03);
+
+	c.Y += 5;
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "Press 'n' for game", 0x03);
+
 }
 
 void renderGame()
@@ -253,6 +297,8 @@ void renderFramerate()
     // displays the framerate
     std::ostringstream ss;
     ss << std::fixed << std::setprecision(3);
+
+
     ss << 1.0 / g_dDeltaTime << "fps";
     c.X = g_Console.getConsoleSize().X - 9;
     c.Y = 0;
@@ -265,6 +311,7 @@ void renderFramerate()
     c.Y = 0;
     g_Console.writeToBuffer(c, ss.str(), 0x59);
 }
+
 void renderToScreen()
 {
     // Writes the buffer to the console, hence you will see what you have written
