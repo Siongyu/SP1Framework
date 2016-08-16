@@ -10,9 +10,11 @@
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+bool	paused = false;
 
 // Game specific variables here
 SGameChar   g_sChar;
+SGameChar	g_sArrow;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -38,6 +40,10 @@ void init(void)
 	g_sChar.m_cLocation.X = g_Console.getConsoleSize().X / 2;
 	g_sChar.m_cLocation.Y = g_Console.getConsoleSize().Y / 2;
 	g_sChar.m_bActive = true;
+
+	g_sArrow.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 15;
+	g_sArrow.m_cLocation.Y = 5;
+	g_sArrow.m_bActive = true;
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
 }
@@ -70,13 +76,17 @@ void shutdown(void)
 //--------------------------------------------------------------
 void getInput(void)
 {
-	g_abKeyPressed[K_UP] = isKeyPressed(VK_UP);
-	g_abKeyPressed[K_DOWN] = isKeyPressed(VK_DOWN);
-	g_abKeyPressed[K_LEFT] = isKeyPressed(VK_LEFT);
-	g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
-	g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
-	g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
-	g_abKeyPressed[K_NEW] = isKeyPressed(0x4E);
+	g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
+	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
+	if (!paused)
+	{
+		g_abKeyPressed[K_UP] = isKeyPressed(VK_UP);
+		g_abKeyPressed[K_DOWN] = isKeyPressed(VK_DOWN);
+		g_abKeyPressed[K_LEFT] = isKeyPressed(VK_LEFT);
+		g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
+		g_abKeyPressed[K_SPACE] = isKeyPressed(VK_SPACE);
+		g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+	}
 }
 
 //--------------------------------------------------------------
@@ -107,6 +117,8 @@ void update(double dt)
 		break;
 	case S_MENU: menu(); // menu for game
 		break;
+	case S_PAUSE: pause(); // pause game
+		break;
 	}
 }
 
@@ -134,23 +146,36 @@ void render()
 	renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
 
+//--------------------------------------------------------------
+// Purpose	: Render the functions for the screens
+// Input	: void
+// Output   : void
+//--------------------------------------------------------------
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-	if (g_dElapsedTime > 10.0) // wait for 3 seconds to switch to game mode, else do nothing
+	if (g_dElapsedTime > 1.0) // wait for 3 seconds to switch to game mode, else do nothing
 		g_eGameState = S_MENU;
 }
 
 void menu()
 {
 	processUserInput(); // process user input function
+	movearrow(); // process arrow movement
 }
 
 void gameplay()            // gameplay logic
 {
 	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
+	pause();
 	// sound can be played here too.
 }
+
+//--------------------------------------------------------------
+// Purpose	: Functions that are in the render screens group
+// Input	: void
+// Output   : void
+//--------------------------------------------------------------
 
 void moveCharacter()
 {
@@ -196,28 +221,84 @@ void moveCharacter()
 		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
 	}
 }
-
 void processUserInput()
 {
 	// quits the game if player hits the escape key
 	if (g_abKeyPressed[K_ESCAPE])
 		g_bQuitGame = true;
+}
 
-	// new game if player hits the 'n' key
-	if (g_abKeyPressed[K_NEW])
-		g_eGameState = S_GAME;
+void movearrow()
+{
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+
+	// Code to move arrow down
+	if (g_abKeyPressed[K_DOWN] && (g_sArrow.m_cLocation.Y = 5))
+	{
+		//Beep(1440, 30);
+		g_sArrow.m_cLocation.Y += 5;
+		bSomethingHappened = true;
+	}
+
+	// Code to move arrow up
+	if (g_abKeyPressed[K_UP] && (g_sArrow.m_cLocation.Y = 10))
+	{
+		//Beep(1440, 30);
+		g_sArrow.m_cLocation.Y -= 5;
+		bSomethingHappened = true;
+	}
+
+	if (g_abKeyPressed[K_ENTER])
+	{
+		if (g_sArrow.m_cLocation.Y == 5)
+		{
+			g_bQuitGame = true;
+		}
+		else
+		{
+			g_eGameState = S_GAME;
+		}
+	}
+
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+	}
+}
+
+void pause()
+{
+
+	bool bSomethingHappened = false;
+	if (g_dBounceTime > g_dElapsedTime)
+		return;
+	if (g_abKeyPressed[K_PAUSE])
+	{
+		paused = !paused;
+		(bSomethingHappened) = true;
+
+	}
+	if (bSomethingHappened)
+	{
+		// set the bounce time to some time in the future to prevent accidental triggers
+		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
+	}
 }
 
 void clearScreen()
 {
 	// Clears the buffer with this colour attribute
-	g_Console.clearBuffer(0x1F);
-}
+	g_Console.clearBuffer(0x03);
+} // Background colour for the screen
 
 // ------------------------------------------------------------- 
 // Purpose	: The different levels 
 // Input    : g_eGameState
 // Output   : void
+//--------------------------------------------------------------
 
 void renderSplashScreen()  // renders the splash screen
 {
@@ -225,41 +306,18 @@ void renderSplashScreen()  // renders the splash screen
 
 	// CREATING TITLE//
 	c.Y = 3;
-	c.X = g_Console.getConsoleSize().X / 2 - 20;
-	g_Console.writeToBuffer(c, "* * * * * * * * * * * * * * * * * * * * ", 0x04);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* * * * * * * * * * * * * * * * * * * * ", 0x04);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* *   * * *   * * * *           * *   * ", 0x04);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* *   * * *   * * * * * *   * * * *   * ", 0x04);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* *   * * *   * * * * * *   * * * *   * ", 0x04);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* *           * * * * * *   * * * *   * ", 0x04);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* *   * * *   * * * * * *   * * * * * * ", 0x09);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* *   * * *   * * * * * *   * * * * * * ", 0x09);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* *   * * *   * * * *           * *   * ", 0x09);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* * * * * * * * * * * * * * * * * * * * ", 0x09);
-	c.Y += 1;
-	g_Console.writeToBuffer(c, "* * * * * * * * * * * * * * * * * * * * ", 0x09);
 
 	// Adding in the text file
-	c.Y += 1;
-	c.X = g_Console.getConsoleSize().X / 2 - 17;
+	c.X = g_Console.getConsoleSize().X / 2 - 30;
 
 	string line;
-	ifstream myfile("HUD.txt");
+	ifstream myfile("SplashScreen.txt");
 	if (myfile.is_open())
 	{
 		while (getline(myfile, line))
 		{
 			c.Y += 1;
-			g_Console.writeToBuffer(c, line, 0x02);
+			g_Console.writeToBuffer(c, line);
 		}
 		myfile.close();
 	}
@@ -272,19 +330,41 @@ void renderMenu()
 
 	c.Y = 5;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "Press 'Esc' to quit", 0x03);
+	g_Console.writeToBuffer(c, "Quit Game", 0x03);
 
 	c.Y += 5;
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "Press 'n' for game", 0x03);
-}
+	g_Console.writeToBuffer(c, "Start Game");
 
+	c.Y = 14;
+	c.X = 33;
+
+	string line;
+	ifstream myfile("MenuInstructions.txt");
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			c.Y += 1;
+			g_Console.writeToBuffer(c, line);
+		}
+		myfile.close();
+	}
+	g_Console.writeToBuffer(g_sArrow.m_cLocation, ">");
+
+}
 
 void renderGame()
 {
 	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
 }
+
+//--------------------------------------------------------------
+// Purpose	: Renders the display onto the screen
+// Input	: void
+// Output   : void
+//--------------------------------------------------------------
 
 void renderMap()
 {
@@ -300,14 +380,29 @@ void renderMap()
 		c.X = 5 * i;
 		c.Y = i + 1;
 		colour(colors[i]);
-		g_Console.writeToBuffer(c, " °±²Û", colors[i]);
+ 		g_Console.writeToBuffer(c, " °±²Û", colors[i]);
+	}
+
+	c.Y = 15;
+	c.X = 34;
+
+	string line;
+	ifstream myfile("GameInstructions.txt");
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			c.Y += 1;
+			g_Console.writeToBuffer(c, line, 0x02);
+		}
+		myfile.close();
 	}
 }
 
 void renderCharacter()
 {
 	// Draw the location of the character
-	WORD charColor = 0x0C;
+	WORD charColor = 0x01;
 	if (g_sChar.m_bActive)
 	{
 		charColor = 0x0A;
@@ -318,20 +413,45 @@ void renderCharacter()
 void renderFramerate()
 {
 	COORD c;
-	// displays the framerate
-	std::ostringstream ss;
-	ss << std::fixed << std::setprecision(3);
-	ss << 1.0 / g_dDeltaTime << "fps";
-	c.X = g_Console.getConsoleSize().X - 9;
-	c.Y = 0;
-	g_Console.writeToBuffer(c, ss.str());
+	
+	if (!paused)
+	{
+		// displays the framerate
+		std::ostringstream ss;
+		ss << std::fixed << std::setprecision(3);
+		ss << 1.0 / g_dDeltaTime << "fps";
+		c.X = g_Console.getConsoleSize().X - 9;
+		c.Y = 0;
+		g_Console.writeToBuffer(c, ss.str());
 
-	// displays the elapsed time
-	ss.str("");
-	ss << g_dElapsedTime << "secs";
-	c.X = 0;
-	c.Y = 0;
-	g_Console.writeToBuffer(c, ss.str(), 0x59);
+		// displays the elapsed time
+		ss.str("");
+		ss << g_dElapsedTime << "secs";
+		c.X = 0;
+		c.Y = 0;
+		g_Console.writeToBuffer(c, ss.str());
+	}
+	else
+	{
+		c.Y = 0;
+		c.X = g_Console.getConsoleSize().X / 2;
+		g_Console.writeToBuffer(c, "Game Paused");
+
+		// displays the framerate
+		std::ostringstream ss;
+		ss << std::fixed << std::setprecision(3);
+		ss << 1.0 / g_dDeltaTime << "fps";
+		c.X = g_Console.getConsoleSize().X - 9;
+		c.Y = 0;
+		g_Console.writeToBuffer(c, ss.str());
+
+		// displays the elapsed time
+		ss.str("");
+		ss << g_dElapsedTime << "secs";
+		c.X = 0;
+		c.Y = 0;
+		g_Console.writeToBuffer(c, ss.str());
+	}
 }
 
 void renderToScreen()

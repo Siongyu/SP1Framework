@@ -1,5 +1,5 @@
-#ifndef _Level1_H
-#define _Level1_H
+#ifndef _textfile_H
+#define _textfile_H
 
 #include <iostream>
 #include <fstream>
@@ -7,4 +7,4 @@
 using namespace std;
 
 
-#endif // _GAME_H
+#endif // _textfile_H

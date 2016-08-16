@@ -2,7 +2,7 @@
 #define _GAME_H
 
 #include "Framework\timer.h"
-#include "Level1.h"
+#include "textfile.h"
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -14,9 +14,10 @@ enum EKEYS
     K_DOWN,
     K_LEFT,
     K_RIGHT,
-	K_NEW,
+	K_ENTER,
     K_ESCAPE,
     K_SPACE,
+	K_PAUSE,
     K_COUNT
 };
 
@@ -26,6 +27,7 @@ enum EGAMESTATES
     S_SPLASHSCREEN,
     S_GAME,
 	S_MENU,
+	S_PAUSE,
     S_COUNT
 };
 
@@ -46,6 +48,8 @@ void splashScreenWait();    // waits for time to pass in splash screen
 void gameplay();            // gameplay logic
 void menu();				// menu logic
 void moveCharacter();       // moves the character, collision detection, physics, etc
+void movearrow();			// for menu input arrow
+void pause();
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
