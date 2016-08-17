@@ -299,7 +299,6 @@ void pause()
 	{
 		paused = !paused;
 		(bSomethingHappened) = true;
-
 	}
 	if (bSomethingHappened)
 	{
@@ -416,46 +415,56 @@ void renderGame()
 
 void renderMap()
 {
-	// Set up sample colours, and output shadings
-	const WORD colors[] = {
-		0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
-		0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
-	};
-
 	COORD c;
-	for (int i = 0; i < 12; ++i)
+	if (!paused)
 	{
-		c.X = 5 * i;
-		c.Y = i + 1;
-		colour(colors[i]);
- 		g_Console.writeToBuffer(c, " °±²Û", colors[i]);
-	}
+		// Set up sample colours, and output shadings
+		const WORD colors[] = {
+			0x1A, 0x2B, 0x3C, 0x4D, 0x5E, 0x6F,
+			0xA1, 0xB2, 0xC3, 0xD4, 0xE5, 0xF6
+		};
 
-	c.Y = 15;
-	c.X = 34;
-
-	string line;
-	ifstream myfile("GameInstructions.txt");
-	if (myfile.is_open())
-	{
-		while (getline(myfile, line))
+		for (int i = 0; i < 12; ++i)
 		{
-			c.Y += 1;
-			g_Console.writeToBuffer(c, line, 0x02);
+			c.X = 5 * i;
+			c.Y = i + 1;
+			colour(colors[i]);
+			g_Console.writeToBuffer(c, " °±²Û", colors[i]);
 		}
-		myfile.close();
+
+		c.Y = 15;
+		c.X = 34;
+
+		string line;
+		ifstream myfile("GameInstructions.txt");
+		if (myfile.is_open())
+		{
+			while (getline(myfile, line))
+			{
+				c.Y += 1;
+				g_Console.writeToBuffer(c, line, 0x02);
+			}
+			myfile.close();
+		}
 	}
+	else
+		c.Y = 5;
+	c.X = 5;
+		g_Console.writeToBuffer(c, "PAUSED" , 0x02);
 }
 
 void renderCharacter()
 {
-	// Draw the location of the character
-	WORD charColor = 0x01;
-	if (g_sChar.m_bActive)
+	if (!paused)
 	{
-		charColor = 0x0A;
+		// Draw the location of the character
+		WORD charColor = 0x01;
+		if (g_sChar.m_bActive)
+		{
+			charColor = 0x0A;
+		}
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
 	}
-	g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
 }
 
 void renderFramerate()
