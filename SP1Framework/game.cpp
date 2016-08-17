@@ -42,7 +42,7 @@ void init(void)
 	g_sChar.m_bActive = true;
 
 	g_sArrow.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 15;
-	g_sArrow.m_cLocation.Y = 5;
+	g_sArrow.m_cLocation.Y = 3;
 	g_sArrow.m_bActive = true;
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(0, 16, L"Consolas");
@@ -117,7 +117,7 @@ void update(double dt)
 		break;
 	case S_MENU: menu(); // menu for game
 		break;
-	case S_PAUSE: pause(); // pause game
+	case S_STORY: story(); // story for game
 		break;
 	}
 }
@@ -141,6 +141,8 @@ void render()
 		break;
 	case S_MENU: renderMenu();
 		break;
+	case S_STORY: renderStory(); // pause game
+		break;
 	}
 	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
 	renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -160,7 +162,12 @@ void splashScreenWait()    // waits for time to pass in splash screen
 void menu()
 {
 	processUserInput(); // process user input function
-	movearrow(); // process arrow movement
+	movemenuarrow(); // process arrow movement
+}
+
+void story()
+{
+	processUserInput(); // process user input function
 }
 
 void gameplay()            // gameplay logic
@@ -176,6 +183,7 @@ void gameplay()            // gameplay logic
 // Input	: void
 // Output   : void
 //--------------------------------------------------------------
+
 
 void moveCharacter()
 {
@@ -221,6 +229,7 @@ void moveCharacter()
 		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
 	}
 }
+
 void processUserInput()
 {
 	// quits the game if player hits the escape key
@@ -228,37 +237,48 @@ void processUserInput()
 		g_bQuitGame = true;
 }
 
-void movearrow()
+void movemenuarrow()
 {
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
 		return;
 
+
 	// Code to move arrow down
-	if (g_abKeyPressed[K_DOWN] && (g_sArrow.m_cLocation.Y = 5))
+	if ((g_abKeyPressed[K_DOWN] && (g_sArrow.m_cLocation.Y == 3)) || (g_abKeyPressed[K_DOWN] && (g_sArrow.m_cLocation.Y == 6)))
 	{
 		//Beep(1440, 30);
-		g_sArrow.m_cLocation.Y += 5;
+		g_sArrow.m_cLocation.Y += 3;
 		bSomethingHappened = true;
 	}
 
 	// Code to move arrow up
-	if (g_abKeyPressed[K_UP] && (g_sArrow.m_cLocation.Y = 10))
+	if (g_abKeyPressed[K_UP] && ((g_sArrow.m_cLocation.Y == 6) || (g_sArrow.m_cLocation.Y == 9)))
 	{
 		//Beep(1440, 30);
-		g_sArrow.m_cLocation.Y -= 5;
+		g_sArrow.m_cLocation.Y -= 3;
 		bSomethingHappened = true;
 	}
 
+
+
+
 	if (g_abKeyPressed[K_ENTER])
 	{
-		if (g_sArrow.m_cLocation.Y == 5)
+		if (g_sArrow.m_cLocation.Y == 3)
 		{
-			g_bQuitGame = true;
+			g_eGameState = S_GAME;
+		}
+		else if (g_sArrow.m_cLocation.Y == 6)
+		{
+			g_eGameState = S_STORY;
 		}
 		else
 		{
-			g_eGameState = S_GAME;
+			if (g_sArrow.m_cLocation.Y == 9)
+			{
+				g_bQuitGame = true;
+			}
 		}
 	}
 
@@ -328,13 +348,17 @@ void renderMenu()
 {
 	COORD c = g_Console.getConsoleSize();
 
-	c.Y = 5;
+	c.Y = 3; // Game at y 3
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "Start Game");
+
+	c.Y += 3; // Story at y 6
+	g_Console.writeToBuffer(c, "Story", 0x03);
+
+	c.Y += 3; // Story at y 9
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
 	g_Console.writeToBuffer(c, "Quit Game", 0x03);
 
-	c.Y += 5;
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "Start Game");
 
 	c.Y = 14;
 	c.X = 33;
@@ -350,8 +374,32 @@ void renderMenu()
 		}
 		myfile.close();
 	}
+
 	g_Console.writeToBuffer(g_sArrow.m_cLocation, ">");
 
+}
+
+void renderStory()
+{
+	COORD c = g_Console.getConsoleSize();
+
+	c.Y = 3; // Story at y 9
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "Insert Story line using text file and letters by letters", 0x03);
+
+	c.Y += 3;
+	c.X = 0;
+	string line;
+	ifstream myfile("Story.txt");
+	if (myfile.is_open())
+	{
+		while (getline(myfile, line))
+		{
+			c.Y += 1;
+			g_Console.writeToBuffer(c, line);
+		}
+		myfile.close();
+	}
 }
 
 void renderGame()
@@ -413,21 +461,28 @@ void renderCharacter()
 void renderFramerate()
 {
 	COORD c;
+	
 	std::ostringstream ss;
+	ss << std::fixed << std::setprecision(3);
 	if (!paused)
 	{
 		// displays the framerate
-		ss << std::fixed << std::setprecision(3);
 		ss << 1.0 / g_dDeltaTime << "fps";
 		c.X = g_Console.getConsoleSize().X - 9;
 		c.Y = 0;
 		g_Console.writeToBuffer(c, ss.str());
+
 
 		// displays the elapsed time
 		ss.str("");
 		ss << g_dElapsedTime << "secs";
 		c.X = 0;
 		c.Y = 0;
+		g_Console.writeToBuffer(c, ss.str());
+
+		ss.str("");
+		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
+		c.Y = 1;
 		g_Console.writeToBuffer(c, ss.str());
 	}
 	else
@@ -437,8 +492,6 @@ void renderFramerate()
 		g_Console.writeToBuffer(c, "Game Paused");
 
 		// displays the framerate
-		std::ostringstream ss;
-		ss << std::fixed << std::setprecision(3);
 		ss << 1.0 / g_dDeltaTime << "fps";
 		c.X = g_Console.getConsoleSize().X - 9;
 		c.Y = 0;
@@ -450,11 +503,12 @@ void renderFramerate()
 		c.X = 0;
 		c.Y = 0;
 		g_Console.writeToBuffer(c, ss.str());
+
+		ss.str("");
+		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
+		c.Y = 1;
+		g_Console.writeToBuffer(c, ss.str());
 	}
-	ss.str("");
-	ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
-	c.Y = 1;
-	g_Console.writeToBuffer(c, ss.str());
 }
 
 void renderToScreen()

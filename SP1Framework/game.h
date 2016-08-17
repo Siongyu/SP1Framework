@@ -27,7 +27,7 @@ enum EGAMESTATES
     S_SPLASHSCREEN,
     S_GAME,
 	S_MENU,
-	S_PAUSE,
+	S_STORY,
     S_COUNT
 };
 
@@ -47,13 +47,15 @@ void shutdown    ( void );      // do clean up, free memory
 void splashScreenWait();    // waits for time to pass in splash screen
 void gameplay();            // gameplay logic
 void menu();				// menu logic
+void story();
 void moveCharacter();       // moves the character, collision detection, physics, etc
-void movearrow();			// for menu input arrow
+void movemenuarrow();			// for menu input arrow
 void pause();
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
 void renderMenu();			// renders the menu
+void renderStory();
 void renderGame();          // renders the game stuff
 void renderMap();           // renders the map to the buffer first
 void renderCharacter();     // renders the character into the buffer
