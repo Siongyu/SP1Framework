@@ -413,11 +413,10 @@ void renderCharacter()
 void renderFramerate()
 {
 	COORD c;
-	
+	std::ostringstream ss;
 	if (!paused)
 	{
 		// displays the framerate
-		std::ostringstream ss;
 		ss << std::fixed << std::setprecision(3);
 		ss << 1.0 / g_dDeltaTime << "fps";
 		c.X = g_Console.getConsoleSize().X - 9;
@@ -452,6 +451,10 @@ void renderFramerate()
 		c.Y = 0;
 		g_Console.writeToBuffer(c, ss.str());
 	}
+	ss.str("");
+	ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
+	c.Y = 1;
+	g_Console.writeToBuffer(c, ss.str());
 }
 
 void renderToScreen()
