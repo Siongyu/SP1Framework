@@ -232,6 +232,7 @@ void Console::writeToBuffer(COORD c, LPCSTR str, WORD attribute)
     writeToBuffer(c.X, c.Y, str, attribute);
 }
 
+
 void Console::writeToBuffer(SHORT x, SHORT y, std::string& s, WORD attribute)
 {
     writeToBuffer(x, y, s.c_str(), attribute);

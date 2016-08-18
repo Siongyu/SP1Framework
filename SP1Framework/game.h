@@ -16,7 +16,6 @@ enum EKEYS
     K_RIGHT,
 	K_ENTER,
     K_ESCAPE,
-    K_SPACE,
 	K_PAUSE,
     K_COUNT
 };
@@ -58,8 +57,12 @@ void renderMenu();			// renders the menu
 void renderStory();
 void renderGame();          // renders the game stuff
 void renderMap();           // renders the map to the buffer first
+bool IsPassable(int nMapX, int nMapY);
+void DrawTile();
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
+void renderplayerandgametime();
+void TimeCheck();
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 
 #endif // _GAME_H

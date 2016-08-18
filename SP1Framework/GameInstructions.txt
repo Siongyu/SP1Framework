@@ -1,9 +1,10 @@
 
-##############################################
-#   UP, DOWN, LEFT, RIGHT                    #
-#                  to move around            #
-#                                            #
-#   Push block to destination to             #
-#                  complete the stage !      #
-#                                            #
-##############################################
+
+################################################################################
+#                                     #    UP, DOWN, LEFT, RIGHT               #
+#                                     #                   to move around       #
+#                                     #                P                       #
+#                                     #                   to pause             #
+#                                     #   Push block to destination to         #
+#                                     #              complete the stage !      #
+################################################################################

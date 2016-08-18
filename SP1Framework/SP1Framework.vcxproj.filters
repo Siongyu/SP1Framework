@@ -47,5 +47,8 @@
     <ClInclude Include="textfile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="drawmap.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
