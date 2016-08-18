@@ -9,6 +9,7 @@
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
+double  g_ElapsedTimeSec;
 bool    g_abKeyPressed[K_COUNT];
 bool	paused = false;
 
@@ -268,6 +269,7 @@ void movemenuarrow()
 		if (g_sArrow.m_cLocation.Y == 3)
 		{
 			g_eGameState = S_GAME;
+			g_dElapsedTime = 0;
 		}
 		else if (g_sArrow.m_cLocation.Y == 6)
 		{
@@ -483,11 +485,19 @@ void renderFramerate()
 
 
 		// displays the elapsed time
-		ss.str("");
+		if (g_eGameState == S_GAME)
+		{
+			ss.str("");
+			ss << (g_dElapsedTime) << "secs  ";
+			c.X = 0;
+			c.Y = 0;
+			g_Console.writeToBuffer(c, ss.str());
+		}
+		/*ss.str("");
 		ss << g_dElapsedTime << "secs";
 		c.X = 0;
 		c.Y = 0;
-		g_Console.writeToBuffer(c, ss.str());
+		g_Console.writeToBuffer(c, ss.str());*/
 
 		ss.str("");
 		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
