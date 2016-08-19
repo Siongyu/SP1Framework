@@ -8,6 +8,9 @@
 #include <sstream>
 #include "drawmap.h"
 
+#define MAP1_WIDTH   48
+#define MAP1_HEIGHT  16
+
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  GameTime;
@@ -17,6 +20,7 @@ bool	paused = false;
 // Game specific variables here
 SGameChar   g_sChar;
 SGameChar	g_sArrow;
+SGameChar	g_sBlock1;
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -25,7 +29,7 @@ Console g_Console(80, 25, "SP1 Framework");
 
 
 int playersteps;
-int nMapArray[MAP_HEIGHT][MAP_WIDTH];
+int nMap1Array[MAP1_HEIGHT][MAP1_WIDTH];
 
 
 //--------------------------------------------------------------
@@ -45,14 +49,18 @@ void init(void)
 
 	// sets the initial state for the game
 	g_eGameState = S_SPLASHSCREEN;
-
-	g_sChar.m_cLocation.X = 2;
-	g_sChar.m_cLocation.Y = 2;
-	g_sChar.m_bActive = true;
+	// character initialisation
+	g_sChar.m_cLocation.X = 12;
+	g_sChar.m_cLocation.Y = 5;
+	g_sChar.bPassable = false;
 
 	g_sArrow.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 15;
 	g_sArrow.m_cLocation.Y = 3;
-	g_sArrow.m_bActive = true;
+	// block initialisation
+	g_sBlock1.m_cLocation.X = 25;
+	g_sBlock1.m_cLocation.Y = 9;
+	g_sBlock1.bPassable = false;
+
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(2, 39, L"Consolas");
 }
@@ -204,47 +212,126 @@ void moveCharacter()
 	// providing a beep sound whenver we shift the character
 	if (g_abKeyPressed[K_UP])
 	{
-		if (IsPassable(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
+		if (!IsPassable(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 2))
 		{
-			//Beep(1440, 30);
-			g_sChar.m_cLocation.Y--;
-			bSomethingHappened = true;
-			playersteps++;
+			if (IsPassable(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
+			{
+				g_sChar.m_cLocation.Y--;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+		}
+		else
+		{
+			if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == g_sBlock1.m_cLocation.X) && (g_sChar.m_cLocation.Y - 1 == g_sBlock1.m_cLocation.Y))
+				{
+					g_sBlock1.m_cLocation.Y--;
+					g_sChar.m_cLocation.Y--;
+					bSomethingHappened = true;
+					playersteps++;
+				}
+			else
+			{
+				g_sChar.m_cLocation.Y--;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+
 		}
 	}
+	
 
 	if (g_abKeyPressed[K_LEFT])
 	{
-		if (IsPassable(g_sChar.m_cLocation.X -1, g_sChar.m_cLocation.Y ))
+
+		if (!IsPassable(g_sChar.m_cLocation.X - 2, g_sChar.m_cLocation.Y))
 		{
-			//Beep(1440, 30);
-			g_sChar.m_cLocation.X--;
-			bSomethingHappened = true;
-			playersteps++;
+			if (IsPassable(g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y))
+			{
+				g_sChar.m_cLocation.X--;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+		}
+		else
+		{
+			if ((!checkblock(g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y)) && ((g_sChar.m_cLocation.X - 1) == g_sBlock1.m_cLocation.X) && (g_sChar.m_cLocation.Y == g_sBlock1.m_cLocation.Y))
+			{
+				g_sBlock1.m_cLocation.X--;
+				g_sChar.m_cLocation.X--;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+			else
+			{
+				g_sChar.m_cLocation.X--;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+
 		}
 	}
 
 
 	if (g_abKeyPressed[K_RIGHT])
 	{
-		if (IsPassable(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y ))
+		if (!IsPassable(g_sChar.m_cLocation.X + 2, g_sChar.m_cLocation.Y))
 		{
-			//Beep(1440, 30);
-			g_sChar.m_cLocation.X++;
-			bSomethingHappened = true;
-			playersteps++;
+			if (IsPassable(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
+			{
+				g_sChar.m_cLocation.X++;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+		}
+		else
+		{
+			if ((!checkblock(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y)) && ((g_sChar.m_cLocation.X + 1) == g_sBlock1.m_cLocation.X) && (g_sChar.m_cLocation.Y == g_sBlock1.m_cLocation.Y))
+			{
+				g_sBlock1.m_cLocation.X++;
+				g_sChar.m_cLocation.X++;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+			else
+			{
+				g_sChar.m_cLocation.X++;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+
 		}
 	}
 
 
 	if (g_abKeyPressed[K_DOWN])
 	{
-		if (IsPassable(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1))
+
+		if (!IsPassable(g_sChar.m_cLocation.X , g_sChar.m_cLocation.Y+ 2))
 		{
-			//Beep(1440, 30);
-			g_sChar.m_cLocation.Y++;
-			bSomethingHappened = true;
-			playersteps++;
+			if (IsPassable(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1))
+			{
+				g_sChar.m_cLocation.Y++;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+		}
+		else
+		{
+			if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1)) && (g_sChar.m_cLocation.X == g_sBlock1.m_cLocation.X) && (g_sChar.m_cLocation.Y+ 1 == g_sBlock1.m_cLocation.Y))
+			{
+				g_sBlock1.m_cLocation.Y++;
+				g_sChar.m_cLocation.Y++;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+			else
+			{
+				g_sChar.m_cLocation.Y++;
+				bSomethingHappened = true;
+				playersteps++;
+			}
+
 		}
 	}
 
@@ -255,11 +342,9 @@ void moveCharacter()
 	}
 }
 
+
 void processUserInput()
 {
-	// quits the game if player hits the escape key
-	if (g_abKeyPressed[K_ESCAPE])
-		g_bQuitGame = true;
 }
 
 void movemenuarrow()
@@ -428,7 +513,7 @@ void renderStory()
 
 void renderGame()
 {
-	renderMap();        // renders the map to the buffer first
+	renderMap1();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
 	renderplayerandgametime();
 }
@@ -439,33 +524,33 @@ void renderGame()
 // Output   : void
 //--------------------------------------------------------------
 
-void renderMap()
+void renderMap1()
 {
 	COORD c;
 
 	if (!paused)
 	{
-		ifstream myfile("LEVEL.txt");
+		ifstream myfile("LEVEL1.txt");
 
 		if (myfile.is_open())
 		{
-			for (int i = 0; i < MAP_HEIGHT; i++)
+			for (int i = 0; i < MAP1_HEIGHT; i++)
 			{
-				for (int j = 0; j < MAP_WIDTH; j++)
+				for (int j = 0; j < MAP1_WIDTH; j++)
 				{
-					myfile >> nMapArray[i][j];
+					myfile >> nMap1Array[i][j];
 				}
 			}
 			myfile.close();
 			c.Y = -1;
-			for (int y = 0; y < MAP_HEIGHT; y++)
+			for (int y = 0; y < MAP1_HEIGHT; y++)
 			{
 				c.Y += 1;
 				c.X = -1;
-				for (int x = 0; x < MAP_WIDTH; x++)
+				for (int x = 0; x < MAP1_WIDTH; x++)
 				{
 					c.X += 1;
-					int nType = nMapArray[y][x];
+					int nType = nMap1Array[y][x];
 					g_Console.writeToBuffer(c, sTileIndex[nType].nCharacter, sTileIndex[nType].nColorCode);
 				}
 			}
@@ -491,26 +576,24 @@ void renderMap()
 
 bool IsPassable(int nMapX, int nMapY)
 {
-	int nTileValue = nMapArray[nMapY][nMapX];
+	int nTileValue = nMap1Array[nMapY][nMapX];
 
-	// Return true if it's passable
-	if (nTileValue == TILE_FLOOR || nTileValue == TILE_GRASS || nTileValue == TILE_OPENDOOR)
-		return true;
-	
 	// Return true if it's passable
 	return sTileIndex[nTileValue].bPassable;
 }
 
+bool checkblock(int charMapX, int charMapY)
+{
+	return g_sBlock1.bPassable;
+}
 void renderCharacter()
 {
 	if (!paused)
 	{
 		// Draw the location of the character
 		WORD charColor = 0x01;
-		if (g_sChar.m_bActive)
-		{
-			charColor = 0x0A;
-		}
+			g_Console.writeToBuffer(g_sBlock1.m_cLocation, 'B', 4);
+
 		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
 	}
 }
@@ -524,8 +607,8 @@ void renderFramerate()
 	if (!paused)
 	{
 		// displays the framerate
-		ss << 1.0 / g_dDeltaTime << "fps";
-		c.X = g_Console.getConsoleSize().X - 9;
+		ss << (int) (1.0 / g_dDeltaTime) << "fps";
+		c.X = g_Console.getConsoleSize().X - 5;
 		c.Y = 0;
 		g_Console.writeToBuffer(c, ss.str());
 
@@ -541,7 +624,7 @@ void renderFramerate()
 		ss.str("");
 		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
 		c.Y = 1;
-		//g_Console.writeToBuffer(c, ss.str());
+		g_Console.writeToBuffer(c, ss.str());
 	}
 	else
 	{
@@ -550,8 +633,8 @@ void renderFramerate()
 		g_Console.writeToBuffer(c, "Game Paused");
 
 		// displays the framerate
-		ss << 1.0 / g_dDeltaTime << "fps";
-		c.X = g_Console.getConsoleSize().X - 9;
+		ss << (int)(1.0 / g_dDeltaTime) << "fps";
+		c.X = g_Console.getConsoleSize().X - 5;
 		c.Y = 0;
 		g_Console.writeToBuffer(c, ss.str());
 
@@ -566,7 +649,7 @@ void renderFramerate()
 		ss.str("");
 		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
 		c.Y = 1;
-		//g_Console.writeToBuffer(c, ss.str());
+		g_Console.writeToBuffer(c, ss.str());
 	}
 }
 
