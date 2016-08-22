@@ -30,11 +30,6 @@ enum EGAMESTATES
     S_COUNT
 };
 
-enum LEVEL
-{
-	LEVEL_1,
-};
-
 // struct for the game character
 struct SGameChar
 {
@@ -60,10 +55,12 @@ void clearScreen();         // clears the current screen and draw from scratch
 void renderSplashScreen();  // renders the splash screen
 void renderMenu();			// renders the menu
 void renderStory();
-void renderGame();          // renders the game stuff
-void renderMap1();           // renders the map to the buffer first
+void renderGame();         // renders the game stuff
+void renderMap();          // renders the map to the buffer first
+void Level1();			   // level 1 map function
 bool IsPassable(int nMapX, int nMapY);
 bool checkblock(int charMapX, int charMapY);
+void GameInstruction();		// game instruction function
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderplayerandgametime();

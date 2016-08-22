@@ -6,10 +6,6 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
-#include "drawmap.h"
-
-#define MAP1_WIDTH   48
-#define MAP1_HEIGHT  16
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
@@ -29,7 +25,6 @@ Console g_Console(80, 25, "SP1 Framework");
 
 
 int playersteps;
-int nMap1Array[MAP1_HEIGHT][MAP1_WIDTH];
 
 
 //--------------------------------------------------------------
@@ -417,6 +412,7 @@ void pause()
 	}
 }
 
+
 void clearScreen()
 {
 	// Clears the buffer with this colour attribute
@@ -513,7 +509,7 @@ void renderStory()
 
 void renderGame()
 {
-	renderMap1();        // renders the map to the buffer first
+	renderMap();        // renders the map to the buffer first
 	renderCharacter();  // renders the character into the buffer
 	renderplayerandgametime();
 }
@@ -524,68 +520,15 @@ void renderGame()
 // Output   : void
 //--------------------------------------------------------------
 
-void renderMap1()
+void renderMap()
 {
-	COORD c;
-
 	if (!paused)
 	{
-		ifstream myfile("LEVEL1.txt");
-
-		if (myfile.is_open())
-		{
-			for (int i = 0; i < MAP1_HEIGHT; i++)
-			{
-				for (int j = 0; j < MAP1_WIDTH; j++)
-				{
-					myfile >> nMap1Array[i][j];
-				}
-			}
-			myfile.close();
-			c.Y = -1;
-			for (int y = 0; y < MAP1_HEIGHT; y++)
-			{
-				c.Y += 1;
-				c.X = -1;
-				for (int x = 0; x < MAP1_WIDTH; x++)
-				{
-					c.X += 1;
-					int nType = nMap1Array[y][x];
-					g_Console.writeToBuffer(c, sTileIndex[nType].nCharacter, sTileIndex[nType].nColorCode);
-				}
-			}
-		
-		}
-		c.X = 0;
-		c.Y = 14;
-		string line;
-		ifstream anotherfile("GameInstructions.txt");
-		if (anotherfile.is_open())
-		{
-			while (getline(anotherfile, line))
-			{
-				c.Y += 1;
-				g_Console.writeToBuffer(c, line);
-			}
-			anotherfile.close();
-		}
+		Level1();
+		GameInstruction();
 	}
-
-	
 }
 
-bool IsPassable(int nMapX, int nMapY)
-{
-	int nTileValue = nMap1Array[nMapY][nMapX];
-
-	// Return true if it's passable
-	return sTileIndex[nTileValue].bPassable;
-}
-
-bool checkblock(int charMapX, int charMapY)
-{
-	return g_sBlock1.bPassable;
-}
 void renderCharacter()
 {
 	if (!paused)
