@@ -57,7 +57,7 @@ void splashScreenWait();    // waits for time to pass in splash screen
 void gameplay();            // gameplay logic
 void menu();				// menu logic
 void moveCharacter();       // moves the character, collision detection, physics, etc, done - yan wen
-void processUserInput();
+void processUserInput();	// 
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
 void renderMenu();			// renders the menu
