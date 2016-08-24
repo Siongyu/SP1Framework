@@ -63,6 +63,9 @@
     <ClCompile Include="Renderplayerandgametime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="characterlevel1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
@@ -105,6 +108,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timecheck.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="characterlevel1.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

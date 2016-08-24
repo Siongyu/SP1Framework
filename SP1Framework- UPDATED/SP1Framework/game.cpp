@@ -183,6 +183,7 @@ void splashScreenWait()    // waits for time to pass in splash screen
 void menu()
 {
 	Movemenuarrow(); // process arrow movement
+	processUserInput();
 }
 
 void gameplay()            // gameplay logic
@@ -275,6 +276,11 @@ void renderSplashScreen()  // renders the splash screen
 
 }
 
+void renderCharacter()
+{
+	characterlevel1();
+}
+
 void renderMenu()
 {
 	COORD c = g_Console.getConsoleSize();
@@ -364,7 +370,7 @@ void renderMap()
 	}
 }
 
-void renderCharacter()
+/*void renderCharacter()
 {
 	if (!paused)
 	{
@@ -388,7 +394,7 @@ void renderCharacter()
 
 		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
 	}
-}
+}*/
 
 void renderFramerate()
 {

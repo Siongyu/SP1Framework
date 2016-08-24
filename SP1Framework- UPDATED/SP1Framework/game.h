@@ -69,6 +69,7 @@ void Level1();			   // -siong yu
 bool IsPassable(int nMapX, int nMapY); //-siong yu
 bool checkblock(int charMapX, int charMapY); // -siongyu
 void renderCharacter();     // renders the character into the buffer
+void characterlevel1();
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderplayerandgametime();
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
