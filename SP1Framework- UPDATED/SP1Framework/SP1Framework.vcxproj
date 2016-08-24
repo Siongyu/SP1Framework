@@ -81,17 +81,32 @@
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
     <ClCompile Include="Gameinstructions.cpp" />
+    <ClCompile Include="Gamestory.cpp" />
+    <ClCompile Include="highscore.cpp" />
     <ClCompile Include="Level1.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="moveCharacter.cpp" />
+    <ClCompile Include="movemenuarrow.cpp" />
     <ClCompile Include="Pause.cpp" />
+    <ClCompile Include="Renderplayerandgametime.cpp" />
+    <ClCompile Include="restart.cpp" />
     <ClCompile Include="Timecheck.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="drawmap.h" />
+    <ClInclude Include="Gameinstructions.h" />
+    <ClInclude Include="Gamestory.h" />
+    <ClInclude Include="highscore.h" />
+    <ClInclude Include="level1.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="moveCharacter.h" />
+    <ClInclude Include="movemenuarrow.h" />
+    <ClInclude Include="Pause.h" />
+    <ClInclude Include="Renderplayerandgametime.h" />
+    <ClInclude Include="restart.h" />
     <ClInclude Include="textfile.h" />
+    <ClInclude Include="Timecheck.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,9 +1,16 @@
-#include "drawmap.h"
+#include "level1.h"
 
-#define MAP1_WIDTH   48
-#define MAP1_HEIGHT  16
-
-int nMap1Array[MAP1_HEIGHT][MAP1_WIDTH];
+struct TILE_TYPE
+{
+	char    nCharacter; // ASCII character for this tile type
+	short   nColorCode; // Color code for this tile type
+	bool	bPassable;
+};
+// Global array used to define all tile types used in the game
+TILE_TYPE  sTileIndex[] = {
+	{ '.', 10, true },     // (0) TILE_FLOOR
+	{ '#', 5, false },     // (1) TILE_WALL
+};
 
 extern Console g_Console;
 
@@ -34,6 +41,7 @@ void Level1()
 				g_Console.writeToBuffer(c, sTileIndex[nType].nCharacter, sTileIndex[nType].nColorCode);
 			}
 		}
+
 	}
 }
 
@@ -43,14 +51,4 @@ bool IsPassable(int nMapX, int nMapY)
 
 	// Return true if it's passable
 	return sTileIndex[nTileValue].bPassable;
-}
-
-bool checkblock(int charMapX, int charMapY)
-{
-	SGameChar	g_sBlock1;
-	// block initialisation
-	g_sBlock1.m_cLocation.X = 25;
-	g_sBlock1.m_cLocation.Y = 9;
-	g_sBlock1.bPassable = false;
-	return g_sBlock1.bPassable;
 }

@@ -6,6 +6,7 @@
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
+extern bool g_bBackspace;
 
 // Enumeration to store the control keys that your game will have
 enum EKEYS
@@ -17,6 +18,8 @@ enum EKEYS
 	K_ENTER,
     K_ESCAPE,
 	K_PAUSE,
+	K_RESTART,
+	K_BACK,
     K_COUNT
 };
 
@@ -27,13 +30,20 @@ enum EGAMESTATES
     S_GAME,
 	S_MENU,
 	S_STORY,
+	S_SCORE,
     S_COUNT
 };
 
 // struct for the game character
 struct SGameChar
 {
-    COORD m_cLocation;
+	COORD m_cLocation;
+	bool	bPassable;
+};
+
+struct SGameBlock
+{
+	COORD m_cLocate;
 	bool	bPassable;
 };
 
@@ -46,25 +56,21 @@ void shutdown    ( void );      // do clean up, free memory
 void splashScreenWait();    // waits for time to pass in splash screen
 void gameplay();            // gameplay logic
 void menu();				// menu logic
-void story();
-void moveCharacter();       // moves the character, collision detection, physics, etc
-void movemenuarrow();			// for menu input arrow
-void pause();
-void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
+void moveCharacter();       // moves the character, collision detection, physics, etc, done - yan wen
+void processUserInput();
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
 void renderMenu();			// renders the menu
-void renderStory();
+void renderStory();			
 void renderGame();         // renders the game stuff
-void renderMap();          // renders the map to the buffer first
-void Level1();			   // level 1 map function
-bool IsPassable(int nMapX, int nMapY);
-bool checkblock(int charMapX, int charMapY);
-void GameInstruction();		// game instruction function
+void renderMap(); 
+void renderScore();// renders the map to the buffer first
+void Level1();			   // -siong yu
+bool IsPassable(int nMapX, int nMapY); //-siong yu
+bool checkblock(int charMapX, int charMapY); // -siongyu
 void renderCharacter();     // renders the character into the buffer
 void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
 void renderplayerandgametime();
-void TimeCheck();
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-
+void end();
 #endif // _GAME_H

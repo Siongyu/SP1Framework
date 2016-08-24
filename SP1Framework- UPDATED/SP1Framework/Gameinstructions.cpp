@@ -1,5 +1,4 @@
-#include "game.h"
-#include "Framework\console.h"
+#include "Gameinstructions.h"
 
 extern Console g_Console;
 

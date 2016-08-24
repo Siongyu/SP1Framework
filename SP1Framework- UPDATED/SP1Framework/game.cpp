@@ -2,21 +2,30 @@
 //
 //
 #include "game.h"
+#include "moveCharacter.h"
+#include "Gameinstructions.h"
+#include "Gamestory.h"
+#include "movemenuarrow.h"
+#include "Renderplayerandgametime.h"
+#include "Timecheck.h"
 #include "Framework\console.h"
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include "highscore.h"
+#include "restart.h"
+#include "Pause.h"
 
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 double  GameTime;
 bool    g_abKeyPressed[K_COUNT];
-bool	paused = false;
+extern bool	paused = false;
 
 // Game specific variables here
-SGameChar   g_sChar;
+SGameChar  g_sChar;
 SGameChar	g_sArrow;
-SGameChar	g_sBlock1;
+
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
 double  g_dBounceTime; // this is to prevent key bouncing, so we won't trigger keypresses more than once
 
@@ -25,7 +34,23 @@ Console g_Console(80, 25, "SP1 Framework");
 
 
 int playersteps;
-
+SGameBlock  sBlockIndex[] = {
+	{ { 19, 5 }, false },     // (0) Block 1
+	{ { 24, 7 }, false },     // (1) Block 2
+	{ { 24, 8 }, false },     // (2) Block 3
+	{ { 24, 12 }, false },     // (3) Block 4
+	{ { 22, 12 }, false },     // (4) Block 5
+	{ { 4, 12 }, false },     // (5) Block 6
+};
+SGameBlock sEndZoneIndex[] =
+{
+	{ { 4, 5 }, false }, // (0)endzone 1
+	{ { 26, 7 }, false },// (1)endzone 2
+	{ { 24, 11 }, false },// (2)endzone 3
+	{ { 26, 12 }, false },// (3)endzone 4
+	{ { 24, 13 }, false }, // (4)endzone 5
+	{ { 4, 8 }, false } // (5)endzone 6
+};
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -51,10 +76,7 @@ void init(void)
 
 	g_sArrow.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 15;
 	g_sArrow.m_cLocation.Y = 3;
-	// block initialisation
-	g_sBlock1.m_cLocation.X = 25;
-	g_sBlock1.m_cLocation.Y = 9;
-	g_sBlock1.bPassable = false;
+
 
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(2, 39, L"Consolas");
@@ -89,6 +111,7 @@ void shutdown(void)
 void getInput(void)
 {
 	g_abKeyPressed[K_PAUSE] = isKeyPressed(0x50);
+	g_abKeyPressed[K_RESTART] = isKeyPressed(0x52);
 	g_abKeyPressed[K_ENTER] = isKeyPressed(VK_RETURN);
 	if (!paused)
 	{
@@ -97,6 +120,8 @@ void getInput(void)
 		g_abKeyPressed[K_LEFT] = isKeyPressed(VK_LEFT);
 		g_abKeyPressed[K_RIGHT] = isKeyPressed(VK_RIGHT);
 		g_abKeyPressed[K_ESCAPE] = isKeyPressed(VK_ESCAPE);
+		g_abKeyPressed[K_RESTART] = isKeyPressed(0x52);
+		g_abKeyPressed[K_BACK] = isKeyPressed(VK_BACK);
 	}
 }
 
@@ -128,7 +153,7 @@ void update(double dt)
 		break;
 	case S_MENU: menu(); // menu for game
 		break;
-	case S_STORY: story(); // story for game
+	case S_STORY: Story(); // story for game
 		break;
 	}
 }
@@ -154,6 +179,8 @@ void render()
 		break;
 	case S_STORY: renderStory(); // pause game
 		break;
+	case S_SCORE: renderScore();
+		break;
 	}
 	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
 	renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
@@ -172,21 +199,16 @@ void splashScreenWait()    // waits for time to pass in splash screen
 
 void menu()
 {
-	processUserInput(); // process user input function
-	movemenuarrow(); // process arrow movement
-}
-
-void story()
-{
-	processUserInput(); // process user input function
+	Movemenuarrow(); // process arrow movement
 }
 
 void gameplay()            // gameplay logic
 {
-	processUserInput(); // checks if you should change states or do something else with the game, e.g. pause, exit
 	moveCharacter();    // moves the character, collision detection, physics, etc
-	pause();
-	TimeCheck();
+	Restart();
+	Pause();
+	timecheck();
+	end();
 	// sound can be played here too.
 }
 
@@ -199,219 +221,40 @@ void gameplay()            // gameplay logic
 
 void moveCharacter()
 {
-	bool bSomethingHappened = false;
-	if (g_dBounceTime > g_dElapsedTime)
-		return;
-
-	// Updating the location of the character based on the key press
-	// providing a beep sound whenver we shift the character
-	if (g_abKeyPressed[K_UP])
-	{
-		if (!IsPassable(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 2))
-		{
-			if (IsPassable(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1))
-			{
-				g_sChar.m_cLocation.Y--;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-		}
-		else
-		{
-			if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == g_sBlock1.m_cLocation.X) && (g_sChar.m_cLocation.Y - 1 == g_sBlock1.m_cLocation.Y))
-				{
-					g_sBlock1.m_cLocation.Y--;
-					g_sChar.m_cLocation.Y--;
-					bSomethingHappened = true;
-					playersteps++;
-				}
-			else
-			{
-				g_sChar.m_cLocation.Y--;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-
-		}
-	}
-	
-
-	if (g_abKeyPressed[K_LEFT])
-	{
-
-		if (!IsPassable(g_sChar.m_cLocation.X - 2, g_sChar.m_cLocation.Y))
-		{
-			if (IsPassable(g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y))
-			{
-				g_sChar.m_cLocation.X--;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-		}
-		else
-		{
-			if ((!checkblock(g_sChar.m_cLocation.X - 1, g_sChar.m_cLocation.Y)) && ((g_sChar.m_cLocation.X - 1) == g_sBlock1.m_cLocation.X) && (g_sChar.m_cLocation.Y == g_sBlock1.m_cLocation.Y))
-			{
-				g_sBlock1.m_cLocation.X--;
-				g_sChar.m_cLocation.X--;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-			else
-			{
-				g_sChar.m_cLocation.X--;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-
-		}
-	}
-
-
-	if (g_abKeyPressed[K_RIGHT])
-	{
-		if (!IsPassable(g_sChar.m_cLocation.X + 2, g_sChar.m_cLocation.Y))
-		{
-			if (IsPassable(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y))
-			{
-				g_sChar.m_cLocation.X++;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-		}
-		else
-		{
-			if ((!checkblock(g_sChar.m_cLocation.X + 1, g_sChar.m_cLocation.Y)) && ((g_sChar.m_cLocation.X + 1) == g_sBlock1.m_cLocation.X) && (g_sChar.m_cLocation.Y == g_sBlock1.m_cLocation.Y))
-			{
-				g_sBlock1.m_cLocation.X++;
-				g_sChar.m_cLocation.X++;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-			else
-			{
-				g_sChar.m_cLocation.X++;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-
-		}
-	}
-
-
-	if (g_abKeyPressed[K_DOWN])
-	{
-
-		if (!IsPassable(g_sChar.m_cLocation.X , g_sChar.m_cLocation.Y+ 2))
-		{
-			if (IsPassable(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y + 1))
-			{
-				g_sChar.m_cLocation.Y++;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-		}
-		else
-		{
-			if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y+1)) && (g_sChar.m_cLocation.X == g_sBlock1.m_cLocation.X) && (g_sChar.m_cLocation.Y+ 1 == g_sBlock1.m_cLocation.Y))
-			{
-				g_sBlock1.m_cLocation.Y++;
-				g_sChar.m_cLocation.Y++;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-			else
-			{
-				g_sChar.m_cLocation.Y++;
-				bSomethingHappened = true;
-				playersteps++;
-			}
-
-		}
-	}
-
-	if (bSomethingHappened)
-	{
-		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
-	}
+	MoveCharacter();
 }
 
-
-void processUserInput()
-{
-}
 
 void movemenuarrow()
 {
-	bool bSomethingHappened = false;
-	if (g_dBounceTime > g_dElapsedTime)
-		return;
+	Movemenuarrow();
+}
 
-
-	// Code to move arrow down
-	if ((g_abKeyPressed[K_DOWN] && (g_sArrow.m_cLocation.Y == 3)) || (g_abKeyPressed[K_DOWN] && (g_sArrow.m_cLocation.Y == 6)))
-	{
-		//Beep(1440, 30);
-		g_sArrow.m_cLocation.Y += 3;
-		bSomethingHappened = true;
-	}
-
-	// Code to move arrow up
-	if (g_abKeyPressed[K_UP] && ((g_sArrow.m_cLocation.Y == 6) || (g_sArrow.m_cLocation.Y == 9)))
-	{
-		//Beep(1440, 30);
-		g_sArrow.m_cLocation.Y -= 3;
-		bSomethingHappened = true;
-	}
-
-
-
-
-	if (g_abKeyPressed[K_ENTER])
-	{
-		if (g_sArrow.m_cLocation.Y == 3)
-		{
-			g_eGameState = S_GAME;
-		}
-		else if (g_sArrow.m_cLocation.Y == 6)
-		{
-			g_eGameState = S_STORY;
-		}
-		else
-		{
-			if (g_sArrow.m_cLocation.Y == 9)
-			{
-				g_bQuitGame = true;
-			}
-		}
-	}
-
-	if (bSomethingHappened)
-	{
-		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
-	}
+void restart()
+{
+	Restart();
 }
 
 void pause()
 {
 
-	bool bSomethingHappened = false;
-	if (g_dBounceTime > g_dElapsedTime)
-		return;
-	if (g_abKeyPressed[K_PAUSE])
-	{
-		paused = !paused;
-		(bSomethingHappened) = true;
-	}
-	if (bSomethingHappened)
-	{
-		// set the bounce time to some time in the future to prevent accidental triggers
-		g_dBounceTime = g_dElapsedTime + 0.125; // 125ms should be enough
-	}
+	Pause();
 }
 
+void processUserInput()
+{
+	
+	if (g_abKeyPressed[K_BACK] && g_eGameState == S_STORY)
+	{
+		g_bBackspace = true;
+		g_eGameState = S_MENU;
+	}
+	if (g_abKeyPressed[K_BACK] && g_eGameState == S_SCORE)
+	{
+		g_bBackspace = true;
+		g_eGameState = S_MENU;
+	}
+}
 
 void clearScreen()
 {
@@ -462,8 +305,11 @@ void renderMenu()
 
 	c.Y += 3; // Story at y 9
 	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "Quit Game", 0x03);
+	g_Console.writeToBuffer(c, "ScoreBoard", 0x03);
 
+	c.Y += 3; // Story at y 9
+	c.X = g_Console.getConsoleSize().X / 2 - 9;
+	g_Console.writeToBuffer(c, "Quit Game", 0x03);
 
 	c.Y = 14;
 	c.X = 33;
@@ -486,16 +332,28 @@ void renderMenu()
 
 void renderStory()
 {
+	Story();
+}
+
+void renderGame()
+{
+	renderMap();        // renders the map to the buffer first
+	renderCharacter();  // renders the character into the buffer
+	renderplayerandgametime();
+}
+
+void renderEnd()  // renders the splash screen
+{
 	COORD c = g_Console.getConsoleSize();
 
-	c.Y = 3; // Story at y 9
-	c.X = g_Console.getConsoleSize().X / 2 - 9;
-	g_Console.writeToBuffer(c, "Insert Story line using text file and letters by letters", 0x03);
+	// CREATING TITLE//
+	c.Y = 3;
 
-	c.Y += 3;
-	c.X = 0;
+	// Adding in the text file
+	c.X = g_Console.getConsoleSize().X / 2 - 30;
+
 	string line;
-	ifstream myfile("Story.txt");
+	ifstream myfile("SplashScreen.txt");
 	if (myfile.is_open())
 	{
 		while (getline(myfile, line))
@@ -505,13 +363,7 @@ void renderStory()
 		}
 		myfile.close();
 	}
-}
 
-void renderGame()
-{
-	renderMap();        // renders the map to the buffer first
-	renderCharacter();  // renders the character into the buffer
-	renderplayerandgametime();
 }
 
 //--------------------------------------------------------------
@@ -529,13 +381,42 @@ void renderMap()
 	}
 }
 
+bool checkblock(int charMapX, int charMapY)
+{
+	int ns = sizeof(sBlockIndex) / sizeof(sBlockIndex[0]);
+
+	for (int bi = 0; bi < ns; bi++)
+	{
+		if (charMapX == sBlockIndex[bi].m_cLocate.X && charMapY == sBlockIndex[bi].m_cLocate.Y)
+		{
+			return sBlockIndex[bi].bPassable;
+			break;
+		}
+	}
+	return true;
+}
+
 void renderCharacter()
 {
 	if (!paused)
 	{
 		// Draw the location of the character
 		WORD charColor = 0x01;
-			g_Console.writeToBuffer(g_sBlock1.m_cLocation, 'B', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[0].m_cLocate, 'a', 4);
+
+		g_Console.writeToBuffer(sEndZoneIndex[1].m_cLocate, 'b', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[2].m_cLocate, 'c', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[3].m_cLocate, 'd', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[4].m_cLocate, 'e', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[5].m_cLocate, 'f', 4);
+
+
+		g_Console.writeToBuffer(sBlockIndex[0].m_cLocate, '1', 4);
+		g_Console.writeToBuffer(sBlockIndex[1].m_cLocate, '2', 4);
+		g_Console.writeToBuffer(sBlockIndex[2].m_cLocate, '3', 4);
+		g_Console.writeToBuffer(sBlockIndex[3].m_cLocate, '4', 4);
+		g_Console.writeToBuffer(sBlockIndex[4].m_cLocate, '5', 4);
+		g_Console.writeToBuffer(sBlockIndex[5].m_cLocate, '6', 4);
 
 		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
 	}
@@ -550,7 +431,7 @@ void renderFramerate()
 	if (!paused)
 	{
 		// displays the framerate
-		ss << (int) (1.0 / g_dDeltaTime) << "fps";
+		ss << (int)(1.0 / g_dDeltaTime) << "fps";
 		c.X = g_Console.getConsoleSize().X - 5;
 		c.Y = 0;
 		g_Console.writeToBuffer(c, ss.str());
@@ -596,41 +477,44 @@ void renderFramerate()
 	}
 }
 
-void TimeCheck()
-{
-	if (!paused)
-	{
-		GameTime += g_dDeltaTime;
-	}
-}
-
 void renderplayerandgametime()
 {
-	COORD c;
-
-	std::ostringstream ss;
-	ss << std::fixed << std::setprecision(3);
-	if (!paused)
-	{
-		// displays the game elapsed time
-		ss.str("");
-		ss << "Game Time: " << GameTime;
-		c.X = 5;
-		c.Y = 19;
-		g_Console.writeToBuffer(c, ss.str());
-
-		ss.str("");
-		ss << "Player Steps: " << playersteps;
-		c.X = 5;
-		c.Y = 22;
-		g_Console.writeToBuffer(c, ss.str());
-	}
-
-
+	timecheck();
+	Renderplayerandgametime();
 }
 
 void renderToScreen()
 {
 	// Writes the buffer to the console, hence you will see what you have written
 	g_Console.flushBufferToConsole();
+}
+
+
+void end()
+{
+	int ns = sizeof(sBlockIndex) / sizeof(sBlockIndex[0]);
+
+	for (int bi = 0; bi < ns; bi++)
+	{
+		for (int ezi = 0; ezi < ns; ezi++)
+		{
+			if ((sBlockIndex[bi].m_cLocate.X == sEndZoneIndex[ezi].m_cLocate.X) && (sBlockIndex[bi].m_cLocate.Y == sEndZoneIndex[ezi].m_cLocate.Y))
+			{
+				sEndZoneIndex[ezi].bPassable = true;
+				break;
+			}
+		}
+	}
+
+
+	if (sEndZoneIndex[0].bPassable && sEndZoneIndex[1].bPassable && sEndZoneIndex[2].bPassable && sEndZoneIndex[3].bPassable && sEndZoneIndex[4].bPassable && sEndZoneIndex[5].bPassable)
+		{
+
+			highScore(to_string(GameTime), to_string(playersteps));
+				g_bQuitGame = true;
+		}
+	
+
+	// shorten it bu having array index for blocks
+
 }
