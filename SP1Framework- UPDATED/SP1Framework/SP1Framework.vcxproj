@@ -77,7 +77,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="characterlevel1.cpp" />
     <ClCompile Include="Framework\console.cpp" />
     <ClCompile Include="Framework\timer.cpp" />
     <ClCompile Include="game.cpp" />
@@ -85,28 +84,30 @@
     <ClCompile Include="Gamestory.cpp" />
     <ClCompile Include="highscore.cpp" />
     <ClCompile Include="Level1.cpp" />
+    <ClCompile Include="Level2.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="moveCharacter.cpp" />
+    <ClCompile Include="moveCharacter1.cpp" />
+    <ClCompile Include="moveCharacter2.cpp" />
     <ClCompile Include="movemenuarrow.cpp" />
     <ClCompile Include="Pause.cpp" />
     <ClCompile Include="Renderplayerandgametime.cpp" />
-    <ClCompile Include="restart.cpp" />
+    <ClCompile Include="restart1.cpp" />
+    <ClCompile Include="restart2.cpp" />
     <ClCompile Include="Timecheck.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="characterlevel1.h" />
-    <ClInclude Include="Gameinstructions.h" />
-    <ClInclude Include="Gamestory.h" />
     <ClInclude Include="highscore.h" />
     <ClInclude Include="level1.h" />
     <ClInclude Include="Framework\console.h" />
     <ClInclude Include="Framework\timer.h" />
     <ClInclude Include="game.h" />
+    <ClInclude Include="level2.h" />
     <ClInclude Include="moveCharacter.h" />
     <ClInclude Include="movemenuarrow.h" />
     <ClInclude Include="Pause.h" />
     <ClInclude Include="Renderplayerandgametime.h" />
-    <ClInclude Include="restart.h" />
+    <ClInclude Include="restart1.h" />
+    <ClInclude Include="restart2.h" />
     <ClInclude Include="textfile.h" />
     <ClInclude Include="Timecheck.h" />
   </ItemGroup>

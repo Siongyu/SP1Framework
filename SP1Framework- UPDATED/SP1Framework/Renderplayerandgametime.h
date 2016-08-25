@@ -16,7 +16,7 @@ extern double  g_dDeltaTime;
 extern double  GameTime;
 extern bool    g_abKeyPressed[K_COUNT];
 extern bool	paused;
-extern SGameBlock  sBlockIndex[];
+extern SGameBlock sBlockIndex[];
 extern SGameBlock sEndZoneIndex[];
 extern SGameChar  g_sChar;
 extern SGameChar  g_sArrow;

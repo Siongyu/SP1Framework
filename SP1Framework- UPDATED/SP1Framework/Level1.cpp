@@ -1,4 +1,6 @@
 #include "level1.h"
+#include "Pause.h"
+extern bool completedlevel1;
 
 struct TILE_TYPE
 {
@@ -89,28 +91,30 @@ bool checkblock(int charMapX, int charMapY)
 
 void characterlevel1()
 {
-	// Draw the location of the character
-	WORD charColor = 0x01;
-	g_Console.writeToBuffer(sEndZoneIndex[0].m_cLocate, 'a', 4);
+	if (!paused)
+	{// Draw the location of the character
+		WORD charColor = 0x01;
+		g_Console.writeToBuffer(sEndZoneIndex[0].m_cLocate, 'a', 4);
 
-	g_Console.writeToBuffer(sEndZoneIndex[1].m_cLocate, 'b', 4);
-	g_Console.writeToBuffer(sEndZoneIndex[2].m_cLocate, 'c', 4);
-	g_Console.writeToBuffer(sEndZoneIndex[3].m_cLocate, 'd', 4);
-	g_Console.writeToBuffer(sEndZoneIndex[4].m_cLocate, 'e', 4);
-	g_Console.writeToBuffer(sEndZoneIndex[5].m_cLocate, 'f', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[1].m_cLocate, 'b', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[2].m_cLocate, 'c', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[3].m_cLocate, 'd', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[4].m_cLocate, 'e', 4);
+		g_Console.writeToBuffer(sEndZoneIndex[5].m_cLocate, 'f', 4);
 
 
-	g_Console.writeToBuffer(sBlockIndex[0].m_cLocate, '1', 4);
-	g_Console.writeToBuffer(sBlockIndex[1].m_cLocate, '2', 4);
-	g_Console.writeToBuffer(sBlockIndex[2].m_cLocate, '3', 4);
-	g_Console.writeToBuffer(sBlockIndex[3].m_cLocate, '4', 4);
-	g_Console.writeToBuffer(sBlockIndex[4].m_cLocate, '5', 4);
-	g_Console.writeToBuffer(sBlockIndex[5].m_cLocate, '6', 4);
+		g_Console.writeToBuffer(sBlockIndex[0].m_cLocate, '1', 4);
+		g_Console.writeToBuffer(sBlockIndex[1].m_cLocate, '2', 4);
+		g_Console.writeToBuffer(sBlockIndex[2].m_cLocate, '3', 4);
+		g_Console.writeToBuffer(sBlockIndex[3].m_cLocate, '4', 4);
+		g_Console.writeToBuffer(sBlockIndex[4].m_cLocate, '5', 4);
+		g_Console.writeToBuffer(sBlockIndex[5].m_cLocate, '6', 4);
 
-	g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+	}
 }
 
-void end()
+void end1()
 {
 	int ns = sizeof(sBlockIndex) / sizeof(sBlockIndex[0]);
 
@@ -123,16 +127,16 @@ void end()
 				sEndZoneIndex[ezi].bPassable = true;
 				break;
 			}
+			if (sEndZoneIndex[0].bPassable && sEndZoneIndex[1].bPassable && sEndZoneIndex[2].bPassable && sEndZoneIndex[3].bPassable && sEndZoneIndex[4].bPassable && sEndZoneIndex[5].bPassable)
+			{
+				completedlevel1 = true;
+				g_eGameState = S_GAME1;
+				render();
+				highScore(to_string(GameTime), to_string(playersteps));
+			}
 		}
 	}
 
-
-	if (sEndZoneIndex[0].bPassable && sEndZoneIndex[1].bPassable && sEndZoneIndex[2].bPassable && sEndZoneIndex[3].bPassable && sEndZoneIndex[4].bPassable && sEndZoneIndex[5].bPassable)
-	{
-
-		highScore(to_string(GameTime), to_string(playersteps));
-		g_bQuitGame = true;
-	}
 
 
 	// shorten it bu having array index for blocks

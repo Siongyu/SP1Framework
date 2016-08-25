@@ -3,8 +3,6 @@
 //
 #include "game.h"
 #include "moveCharacter.h"
-#include "Gameinstructions.h"
-#include "Gamestory.h"
 #include "movemenuarrow.h"
 #include "Renderplayerandgametime.h"
 #include "Timecheck.h"
@@ -13,7 +11,8 @@
 #include <iomanip>
 #include <sstream>
 #include "highscore.h"
-#include "restart.h"
+#include "restart1.h"
+#include "restart2.h"
 #include "Pause.h"
 
 double  g_dElapsedTime;
@@ -21,9 +20,13 @@ double  g_dDeltaTime;
 double  GameTime;
 bool    g_abKeyPressed[K_COUNT];
 extern bool	paused = false;
+bool completedlevel1 = false;
+bool completedlevel2 = false;
+
 
 // Game specific variables here
 SGameChar  g_sChar;
+SGameChar	g_sChar2;
 SGameChar	g_sArrow;
 
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
@@ -53,9 +56,15 @@ void init(void)
 	// sets the initial state for the game
 	g_eGameState = S_SPLASHSCREEN;
 	// character initialisation
-	g_sChar.m_cLocation.X = 12;
-	g_sChar.m_cLocation.Y = 5;
-	g_sChar.bPassable = false;
+		g_sChar.m_cLocation.X = 12;
+		g_sChar.m_cLocation.Y = 5;
+		g_sChar.bPassable = false;
+
+
+		g_sChar2.m_cLocation.X = 12;
+		g_sChar2.m_cLocation.Y = 4;
+		g_sChar2.bPassable = false;
+
 
 	g_sArrow.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 15;
 	g_sArrow.m_cLocation.Y = 3;
@@ -108,6 +117,8 @@ void getInput(void)
 	}
 }
 
+// ------------------------------------------------------U P D A T E ------------------------------------- //
+
 //--------------------------------------------------------------
 // Purpose  : Update function
 //            This is the update function
@@ -134,6 +145,8 @@ void update(double dt)
 		break;
 	case S_GAME: gameplay(); // gameplay logic when we are in the game
 		break;
+	case S_GAME1: gameplay(); // gameplay logic when we are in the game
+		break;
 	case S_MENU: menu(); // menu for game
 		break;
 	case S_STORY: Story(); // story for game
@@ -141,33 +154,6 @@ void update(double dt)
 	}
 }
 
-//--------------------------------------------------------------
-// Purpose  : Render function is to update the console screen
-//            At this point, you should know exactly what to draw onto the screen.
-//            Just draw it!
-//            To get an idea of the values for colours, look at console.h and the URL listed there
-// Input    : void
-// Output   : void
-//--------------------------------------------------------------
-void render()
-{
-	clearScreen();      // clears the current screen and draw from scratch 
-	switch (g_eGameState)
-	{
-	case S_SPLASHSCREEN: renderSplashScreen();
-		break;
-	case S_GAME: renderGame();
-		break;
-	case S_MENU: renderMenu();
-		break;
-	case S_STORY: renderStory(); // pause game
-		break;
-	case S_SCORE: renderScore();
-		break;
-	}
-	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
-	renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
-}
 
 //--------------------------------------------------------------
 // Purpose	: Render the functions for the screens
@@ -176,7 +162,7 @@ void render()
 //--------------------------------------------------------------
 void splashScreenWait()    // waits for time to pass in splash screen
 {
-	if (g_dElapsedTime > 1.0) // wait for 3 seconds to switch to game mode, else do nothing
+	if (g_dElapsedTime > 1.0) // wait for 1 seconds to switch to game mode, else do nothing
 		g_eGameState = S_MENU;
 }
 
@@ -188,42 +174,31 @@ void menu()
 
 void gameplay()            // gameplay logic
 {
-	moveCharacter();    // moves the character, collision detection, physics, etc
-	Restart();
-	Pause();
+	if (!completedlevel1)
+	{
+		Restart1();
+		end1();
+		moveCharacter1();
+	}
+	else
+	{
+		if (!completedlevel2)
+		{
+			Restart2();
+			end2();
+			moveCharacter2();
+		}
+	}
 	timecheck();
-	end();
+	Pause();
 	// sound can be played here too.
 }
 
 //--------------------------------------------------------------
-// Purpose	: Functions that are in the render screens group
+// Purpose	: Functions that are in the update group
 // Input	: void
 // Output   : void
 //--------------------------------------------------------------
-
-
-void moveCharacter()
-{
-	MoveCharacter();
-}
-
-
-void movemenuarrow()
-{
-	Movemenuarrow();
-}
-
-void restart()
-{
-	Restart();
-}
-
-void pause()
-{
-
-	Pause();
-}
 
 void processUserInput()
 {
@@ -245,6 +220,49 @@ void clearScreen()
 	// Clears the buffer with this colour attribute
 	g_Console.clearBuffer(0x03);
 } // Background colour for the screen
+
+
+
+
+
+// ------------------------------------------------------R E N D E R ------------------------------------- //
+
+
+
+
+
+
+//--------------------------------------------------------------
+// Purpose  : Render function is to update the console screen
+//            At this point, you should know exactly what to draw onto the screen.
+//            Just draw it!
+//            To get an idea of the values for colours, look at console.h and the URL listed there
+// Input    : void
+// Output   : void
+//--------------------------------------------------------------
+void render()
+{
+	clearScreen();      // clears the current screen and draw from scratch 
+	switch (g_eGameState)
+	{
+	case S_SPLASHSCREEN: renderSplashScreen();
+		break;
+	case S_GAME: renderGame();
+		break;
+	case S_GAME1: renderGame1();
+		break;
+	case S_MENU: renderMenu();
+		break;
+	case S_STORY: renderStory(); 
+		break;
+	case S_SCORE: renderScore();
+		break;
+	}
+	renderFramerate();  // renders debug information, frame rate, elapsed time, etc
+	renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
+}
+
+
 
 // ------------------------------------------------------------- 
 // Purpose	: The different levels 
@@ -274,11 +292,6 @@ void renderSplashScreen()  // renders the splash screen
 		myfile.close();
 	}
 
-}
-
-void renderCharacter()
-{
-	characterlevel1();
 }
 
 void renderMenu()
@@ -326,34 +339,20 @@ void renderStory()
 
 void renderGame()
 {
-	renderMap();        // renders the map to the buffer first
-	renderCharacter();  // renders the character into the buffer
+
+		renderMap1();        // renders the map to the buffer first
+		characterlevel1();  // renders the character into the buffer
+		renderplayerandgametime();
+}
+
+void renderGame1()
+{
+	renderMap2();
+	characterlevel2();
+
 	renderplayerandgametime();
 }
 
-void renderEnd()  // renders the splash screen
-{
-	COORD c = g_Console.getConsoleSize();
-
-	// CREATING TITLE//
-	c.Y = 3;
-
-	// Adding in the text file
-	c.X = g_Console.getConsoleSize().X / 2 - 30;
-
-	string line;
-	ifstream myfile("SplashScreen.txt");
-	if (myfile.is_open())
-	{
-		while (getline(myfile, line))
-		{
-			c.Y += 1;
-			g_Console.writeToBuffer(c, line);
-		}
-		myfile.close();
-	}
-
-}
 
 //--------------------------------------------------------------
 // Purpose	: Renders the display onto the screen
@@ -361,7 +360,7 @@ void renderEnd()  // renders the splash screen
 // Output   : void
 //--------------------------------------------------------------
 
-void renderMap()
+void renderMap1()
 {
 	if (!paused)
 	{
@@ -370,31 +369,15 @@ void renderMap()
 	}
 }
 
-/*void renderCharacter()
+void renderMap2()
 {
 	if (!paused)
 	{
-		// Draw the location of the character
-		WORD charColor = 0x01;
-		g_Console.writeToBuffer(sEndZoneIndex[0].m_cLocate, 'a', 4);
-
-		g_Console.writeToBuffer(sEndZoneIndex[1].m_cLocate, 'b', 4);
-		g_Console.writeToBuffer(sEndZoneIndex[2].m_cLocate, 'c', 4);
-		g_Console.writeToBuffer(sEndZoneIndex[3].m_cLocate, 'd', 4);
-		g_Console.writeToBuffer(sEndZoneIndex[4].m_cLocate, 'e', 4);
-		g_Console.writeToBuffer(sEndZoneIndex[5].m_cLocate, 'f', 4);
-
-
-		g_Console.writeToBuffer(sBlockIndex[0].m_cLocate, '1', 4);
-		g_Console.writeToBuffer(sBlockIndex[1].m_cLocate, '2', 4);
-		g_Console.writeToBuffer(sBlockIndex[2].m_cLocate, '3', 4);
-		g_Console.writeToBuffer(sBlockIndex[3].m_cLocate, '4', 4);
-		g_Console.writeToBuffer(sBlockIndex[4].m_cLocate, '5', 4);
-		g_Console.writeToBuffer(sBlockIndex[5].m_cLocate, '6', 4);
-
-		g_Console.writeToBuffer(g_sChar.m_cLocation, (char)1, charColor);
+		Level2();
+		GameInstruction();
 	}
-}*/
+}
+
 
 void renderFramerate()
 {
@@ -423,6 +406,10 @@ void renderFramerate()
 		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
 		c.Y = 1;
 		g_Console.writeToBuffer(c, ss.str());
+		ss.str("");
+		ss << "x location: " << g_sChar2.m_cLocation.X << " & y location: " << g_sChar2.m_cLocation.Y;
+		c.Y = 1;
+		g_Console.writeToBuffer(c, ss.str());
 	}
 	else
 	{
@@ -446,6 +433,10 @@ void renderFramerate()
 
 		ss.str("");
 		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
+		c.Y = 1;
+		g_Console.writeToBuffer(c, ss.str());
+		ss.str("");
+		ss << "x location: " << g_sChar2.m_cLocation.X << " & y location: " << g_sChar2.m_cLocation.Y;
 		c.Y = 1;
 		g_Console.writeToBuffer(c, ss.str());
 	}

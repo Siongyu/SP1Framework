@@ -1,17 +1,6 @@
 #include "moveCharacter.h"
 
-//double  g_dElapsedTime;
-//double  g_dDeltaTime;
-//double  GameTime;
-//bool    g_abKeyPressed[K_COUNT];
-//bool	paused = false;
-//
-//SGameChar  g_sChar;
-//SGameChar	g_sArrow;
-//double  g_dBounceTime;
-
-
-void MoveCharacter()
+void moveCharacter1()
 {
 	bool bSomethingHappened = false;
 	if (g_dBounceTime > g_dElapsedTime)
@@ -34,43 +23,43 @@ void MoveCharacter()
 			}
 		}
 		else
-		{
-			if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[0].m_cLocate.X) && (g_sChar.m_cLocation.Y - 1 == sBlockIndex[0].m_cLocate.Y))
+		{			
+			if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[0].m_cLocate.X) && ((g_sChar.m_cLocation.Y - 1) == sBlockIndex[0].m_cLocate.Y))
 			{
 				sBlockIndex[0].m_cLocate.Y--;
 				g_sChar.m_cLocation.Y--;
 				bSomethingHappened = true;
 				playersteps++;
 			}
-			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[1].m_cLocate.X) && (g_sChar.m_cLocation.Y - 1 == sBlockIndex[1].m_cLocate.Y))
+			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[1].m_cLocate.X) && ((g_sChar.m_cLocation.Y - 1) == sBlockIndex[1].m_cLocate.Y))
 			{
 				sBlockIndex[1].m_cLocate.Y--;
 				g_sChar.m_cLocation.Y--;
 				bSomethingHappened = true;
 				playersteps++;
 			}
-			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[2].m_cLocate.X) && (g_sChar.m_cLocation.Y - 1 == sBlockIndex[2].m_cLocate.Y))
+			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[2].m_cLocate.X) && ((g_sChar.m_cLocation.Y - 1) == sBlockIndex[2].m_cLocate.Y))
 			{
 				sBlockIndex[2].m_cLocate.Y--;
 				g_sChar.m_cLocation.Y--;
 				bSomethingHappened = true;
 				playersteps++;
 			}
-			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[3].m_cLocate.X) && (g_sChar.m_cLocation.Y - 1 == sBlockIndex[3].m_cLocate.Y))
+			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[3].m_cLocate.X) && ((g_sChar.m_cLocation.Y - 1) == sBlockIndex[3].m_cLocate.Y))
 			{
 				sBlockIndex[3].m_cLocate.Y--;
 				g_sChar.m_cLocation.Y--;
 				bSomethingHappened = true;
 				playersteps++;
 			}
-			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[4].m_cLocate.X) && (g_sChar.m_cLocation.Y - 1 == sBlockIndex[4].m_cLocate.Y))
+			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[4].m_cLocate.X) && ((g_sChar.m_cLocation.Y - 1) == sBlockIndex[4].m_cLocate.Y))
 			{
 				sBlockIndex[4].m_cLocate.Y--;
 				g_sChar.m_cLocation.Y--;
 				bSomethingHappened = true;
 				playersteps++;
 			}
-			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[5].m_cLocate.X) && (g_sChar.m_cLocation.Y - 1 == sBlockIndex[5].m_cLocate.Y))
+			else if ((!checkblock(g_sChar.m_cLocation.X, g_sChar.m_cLocation.Y - 1)) && (g_sChar.m_cLocation.X == sBlockIndex[5].m_cLocate.X) && ((g_sChar.m_cLocation.Y - 1) == sBlockIndex[5].m_cLocate.Y))
 			{
 				sBlockIndex[5].m_cLocate.Y--;
 				g_sChar.m_cLocation.Y--;

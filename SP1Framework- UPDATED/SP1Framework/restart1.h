@@ -1,5 +1,5 @@
-#ifndef _moveCharacter_h
-#define _movCharacter_h
+#ifndef _restart1_h
+#define _restart1_h
 #include "game.h"
 #include "Framework\console.h"
 #include <iostream>
@@ -7,22 +7,18 @@
 #include <sstream>
 #include "highscore.h"
 
-
 extern double  g_dElapsedTime;
 extern double  g_dDeltaTime;
 extern double  GameTime;
-extern bool    g_abKeyPressed[K_COUNT];
-extern SGameBlock  sBlockIndex[];
-extern SGameBlock2  sBlockIndex2[];
-extern SGameChar  g_sChar;
-extern SGameChar  g_sChar2;
-extern SGameChar	g_sArrow;
 extern double  g_dBounceTime;
-using namespace std;
-extern bool completedlevel1;
-extern bool completedlevel2;
+extern bool    g_abKeyPressed[K_COUNT];
 
-void moveCharacter1();
-void MoveCharacter2();
+extern SGameBlock sBlockIndex[];
+extern SGameBlock sEndZoneIndex[];
+extern SGameChar  g_sChar;
+
+void Restart1();
+
+using namespace std;
 
 #endif

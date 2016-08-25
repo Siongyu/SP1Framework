@@ -1,5 +1,4 @@
 #include "highscore.h"
-#include <vector>
 extern Console g_Console;
 
 //Highscore for the game. Ultimately, timing is the one to see who's the 'winner' - Fastest. The steps is just there to show to the player(s) on how many steps the player(s) took to complete within that 'time'.

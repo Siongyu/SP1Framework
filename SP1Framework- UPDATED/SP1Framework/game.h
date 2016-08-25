@@ -3,6 +3,8 @@
 
 #include "Framework\timer.h"
 #include "textfile.h"
+#include "Framework\console.h"
+
 
 extern CStopWatch g_swTimer;
 extern bool g_bQuitGame;
@@ -28,6 +30,7 @@ enum EGAMESTATES
 {
     S_SPLASHSCREEN,
     S_GAME,
+	S_GAME1,
 	S_MENU,
 	S_STORY,
 	S_SCORE,
@@ -47,6 +50,14 @@ struct SGameBlock
 	bool	bPassable;
 };
 
+struct SGameBlock2
+{
+	COORD m_cLocate;
+	char    nCharacter; // ASCII character for this tile type
+	short   nColorCode; // Color code for this tile type
+	bool	bPassable;
+};
+
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game
@@ -56,22 +67,56 @@ void shutdown    ( void );      // do clean up, free memory
 void splashScreenWait();    // waits for time to pass in splash screen
 void gameplay();            // gameplay logic
 void menu();				// menu logic
-void moveCharacter();       // moves the character, collision detection, physics, etc, done - yan wen
-void processUserInput();	// 
+void moveCharacter();       // moves the character, collision detection, physics, etc, done 
+void processUserInput();	
 void clearScreen();         // clears the current screen and draw from scratch 
 void renderSplashScreen();  // renders the splash screen
 void renderMenu();			// renders the menu
 void renderStory();			
-void renderGame();         // renders the game stuff
-void renderMap(); 
-void renderScore();// renders the map to the buffer first
-void Level1();			   // -siong yu
-bool IsPassable(int nMapX, int nMapY); //-siong yu
-bool checkblock(int charMapX, int charMapY); // -siongyu
-void renderCharacter();     // renders the character into the buffer
-void characterlevel1();
-void renderFramerate();     // renders debug information, frame rate, elapsed time, etc
-void renderplayerandgametime();
+void renderGame();			 // renders the game stuff
+void renderGame1();
+void renderScore();			// renders the map to the buffer first
+void renderFramerate();     // renders debug information, frame rate, system elapsed time, etc
+void renderplayerandgametime(); // renders game time and player steps 
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
-void end();
+
+void Story();
+void GameInstruction();
+void timecheck();
+
+//------------------------LEVEL 1------------------//
+
+// function call
+void Level1(); // load the map
+
+// render map
+void characterlevel1();
+void renderMap1();
+void moveCharacter1();       // moves the character, collision detection, physics, etc, done 
+bool IsPassable(int nMapX, int nMapY);
+bool checkblock(int charMapX, int charMapY);
+
+// completed function
+void end1();
+
+/* end of level 1*/
+
+
+// ------------------------LEVEL 2-----------------//
+
+// function call
+void Level2(); // load the map
+
+// render map
+void characterlevel2();
+void renderMap2();
+void moveCharacter2();
+bool IsPassable2(int nMapX, int nMapY);
+bool checkblock2(int charMapX, int charMapY);
+
+// completed function
+void end2();
+
+/* end of level 2*/
+
 #endif // _GAME_H

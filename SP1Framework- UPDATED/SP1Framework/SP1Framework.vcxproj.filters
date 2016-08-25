@@ -48,12 +48,6 @@
     <ClCompile Include="highscore.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="moveCharacter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="restart.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Gamestory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -63,7 +57,19 @@
     <ClCompile Include="Renderplayerandgametime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="characterlevel1.cpp">
+    <ClCompile Include="Level2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="restart1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="restart2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="moveCharacter2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="moveCharacter1.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -89,16 +95,7 @@
     <ClInclude Include="moveCharacter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="restart.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Pause.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameinstructions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Gamestory.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="movemenuarrow.h">
@@ -110,7 +107,13 @@
     <ClInclude Include="Timecheck.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="characterlevel1.h">
+    <ClInclude Include="level2.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="restart1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="restart2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

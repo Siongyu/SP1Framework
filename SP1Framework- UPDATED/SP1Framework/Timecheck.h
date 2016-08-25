@@ -12,10 +12,7 @@ extern double  g_dDeltaTime;
 extern double  GameTime;
 extern double  g_dBounceTime;
 extern bool    g_abKeyPressed[K_COUNT];
-extern SGameBlock  sBlockIndex[];
-extern SGameBlock sEndZoneIndex[];
-extern SGameChar  g_sChar;
-extern SGameChar  g_sArrow;
+
 using namespace std;
 void timecheck();
 #endif
