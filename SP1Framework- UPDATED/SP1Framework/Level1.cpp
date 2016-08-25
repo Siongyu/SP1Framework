@@ -50,6 +50,20 @@ void Level1()
 			}
 		}
 		myfile.close();
+		//--------this is for viewing distance-------------//
+		/*c.Y = g_sChar.m_cLocation.Y - 4;
+		for (int y = g_sChar.m_cLocation.Y - 3; y < g_sChar.m_cLocation.Y + 3; y++)
+		{
+			c.Y += 1;
+			c.X = g_sChar.m_cLocation.X - 4;
+			for (int x = g_sChar.m_cLocation.X - 3; x < g_sChar.m_cLocation.X + 3; x++)
+			{
+				c.X += 1;
+				int nType = nMap1Array[y][x];
+				g_Console.writeToBuffer(c, sTileIndex[nType].nCharacter, sTileIndex[nType].nColorCode);
+			}
+		}*/
+		//---------this is for without viewing distance------------//
 		c.Y = -1;
 		for (int y = 0; y < MAP1_HEIGHT; y++)
 		{

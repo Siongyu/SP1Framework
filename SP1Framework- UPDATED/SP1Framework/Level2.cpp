@@ -59,6 +59,20 @@ void Level2()
 			}
 		}
 		myfile.close();
+		//-----this is for with viewing distance--------//
+		/*c.Y = g_sChar2.m_cLocation.Y - 4;
+		for (int y = g_sChar2.m_cLocation.Y - 3; y < g_sChar2.m_cLocation.Y + 3; y++)
+		{
+			c.Y += 1;
+			c.X = g_sChar2.m_cLocation.X - 4;
+			for (int x = g_sChar2.m_cLocation.X - 3; x < g_sChar2.m_cLocation.X + 3; x++)
+			{
+				c.X += 1;
+				int nType = nMap2Array[y][x];
+				g_Console.writeToBuffer(c, sTileIndex[nType].nCharacter, sTileIndex[nType].nColorCode);
+			}
+		}*/
+		//----this is for without viewing distance------//
 		c.Y = -1;
 		for (int y = 0; y < MAP2_HEIGHT; y++)
 		{
