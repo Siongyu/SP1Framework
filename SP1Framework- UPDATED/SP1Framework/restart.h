@@ -21,6 +21,14 @@ extern SGameBlock2 sBlockIndex2[];
 extern SGameBlock2 sEndZoneIndex2[];
 extern SGameChar  g_sChar2;
 extern bool completedlevel2;
+extern SGameBlock3 sBlockIndex3[];
+extern SGameBlock3 sEndZoneIndex3[];
+extern SGameChar  g_sChar3;
+extern bool completedlevel3;
+extern SGameBlock3_Stage2 sBlockIndex3_S2[];
+extern SGameBlock3_Stage2 sEndZoneIndex3_S2[];
+extern SGameChar  g_sChar3_Stage2;
+extern bool completedlevel3_S2;
 
 void Restart();
 

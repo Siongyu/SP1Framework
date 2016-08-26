@@ -69,6 +69,18 @@
     <ClCompile Include="restart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="renderHighscore.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="level3_Stage1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="moveCharacter3.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="level3_Stage2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Framework\console.h">
@@ -108,6 +120,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="restart.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="renderHighscore.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="level3_Stage1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="level3_Stage2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

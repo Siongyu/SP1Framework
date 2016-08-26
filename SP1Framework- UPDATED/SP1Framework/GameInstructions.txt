@@ -3,8 +3,8 @@
 ################################################################################
 #                                     #    UP, DOWN, LEFT, RIGHT               #
 #                                     #                   to move around       #
-#                                     #                P                       #
-#                                     #                   to pause             #
+#                                     #           P to pause                   #
+#                                     #         R to restart level             #
 #                                     #   Push block to destination to         #
 #                                     #              complete the stage !      #
 ################################################################################

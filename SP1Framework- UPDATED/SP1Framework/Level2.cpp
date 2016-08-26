@@ -10,8 +10,8 @@ struct TILE_TYPE2
 };
 // Global array used to define all tile types used in the game
 TILE_TYPE2  sTileIndex[] = {
-	{ '.', 10, true },     // (0) TILE_FLOOR
-	{ '#', 5, false },     // (1) TILE_WALL
+	{ ' ', 10, true },     // (0) TILE_FLOOR
+	{ '²', 5, false },     // (1) TILE_WALL
 };
 
 
@@ -94,7 +94,7 @@ void characterlevel2()
 {
 	if (!paused)
 	{// Draw the location of the character
-		WORD charColor = 0x01;
+		WORD charColor = 2;
 		int ns = sizeof(sBlockIndex2) / sizeof(sBlockIndex2[0]);
 		for (int ezi = 0; ezi < ns; ezi++)
 		{
@@ -127,11 +127,12 @@ void end2()
 
 	//sEndZoneIndex2[0].bPassable && sEndZoneIndex2[1].bPassable && sEndZoneIndex2[2].bPassable && sEndZoneIndex2[3].bPassable && sEndZoneIndex2[4].bPassable && sEndZoneIndex2[5].bPassable && sEndZoneIndex2[6].bPassable && sEndZoneIndex2[7].bPassable && sEndZoneIndex2[8].bPassable
 
-	if ((sBlockIndex2[0].m_cLocate.X == sEndZoneIndex2[0].m_cLocate.X) && (sBlockIndex2[1].m_cLocate.X == sEndZoneIndex2[1].m_cLocate.X) && (sBlockIndex2[2].m_cLocate.X == sEndZoneIndex2[3].m_cLocate.X) && (sBlockIndex2[3].m_cLocate.X == sEndZoneIndex2[5].m_cLocate.X) && (sBlockIndex2[4].m_cLocate.X == sEndZoneIndex2[4].m_cLocate.X) && (sBlockIndex2[5].m_cLocate.X == sEndZoneIndex2[2].m_cLocate.X) && (sBlockIndex2[6].m_cLocate.X == sEndZoneIndex2[7].m_cLocate.X) && (sBlockIndex2[7].m_cLocate.Y == sEndZoneIndex2[8].m_cLocate.Y) && (sBlockIndex2[8].m_cLocate.X == sEndZoneIndex2[6].m_cLocate.X))
+	if ((sBlockIndex2[0].m_cLocate.X == sEndZoneIndex2[0].m_cLocate.X) /*&& (sBlockIndex2[1].m_cLocate.X == sEndZoneIndex2[1].m_cLocate.X) && (sBlockIndex2[2].m_cLocate.X == sEndZoneIndex2[3].m_cLocate.X) && (sBlockIndex2[3].m_cLocate.X == sEndZoneIndex2[5].m_cLocate.X) && (sBlockIndex2[4].m_cLocate.X == sEndZoneIndex2[4].m_cLocate.X) && (sBlockIndex2[5].m_cLocate.X == sEndZoneIndex2[2].m_cLocate.X) && (sBlockIndex2[6].m_cLocate.X == sEndZoneIndex2[7].m_cLocate.X) && (sBlockIndex2[7].m_cLocate.Y == sEndZoneIndex2[8].m_cLocate.Y) && (sBlockIndex2[8].m_cLocate.X == sEndZoneIndex2[6].m_cLocate.X)*/)
 	{
 		completedlevel2 = true;
+		g_eGameState = S_GAME2;
+		render();
 		highScore(to_string(GameTime), to_string(playersteps));
-		g_bQuitGame = true;
 	}
 
 

@@ -10,8 +10,8 @@ struct TILE_TYPE
 };
 // Global array used to define all tile types used in the game
 TILE_TYPE  sTileIndex[] = {
-	{ '.', 10, true },     // (0) TILE_FLOOR
-	{ '#', 5, false },     // (1) TILE_WALL
+	{ ' ', 10, true },     // (0) TILE_FLOOR
+	{ '²', 5, false },     // (1) TILE_WALL
 };
 
 SGameBlock  sBlockIndex[] = {
@@ -107,7 +107,7 @@ void characterlevel1()
 {
 	if (!paused)
 	{// Draw the location of the character
-		WORD charColor = 0x01;
+		WORD charColor = 2;
 		g_Console.writeToBuffer(sEndZoneIndex[0].m_cLocate, 'a', 4);
 
 		g_Console.writeToBuffer(sEndZoneIndex[1].m_cLocate, 'b', 4);
@@ -141,8 +141,7 @@ void end1()
 				sEndZoneIndex[ezi].bPassable = true;
 				break;
 			}
-			//&& sEndZoneIndex[1].bPassable && sEndZoneIndex[2].bPassable && sEndZoneIndex[3].bPassable && sEndZoneIndex[4].bPassable && sEndZoneIndex[5].bPassable
-			if (sEndZoneIndex[0].bPassable)
+			if (sEndZoneIndex[0].bPassable /*&& sEndZoneIndex[1].bPassable && sEndZoneIndex[2].bPassable && sEndZoneIndex[3].bPassable && sEndZoneIndex[4].bPassable && sEndZoneIndex[5].bPassable*/)
 			{
 				completedlevel1 = true;
 				g_eGameState = S_GAME1;
@@ -151,9 +150,4 @@ void end1()
 			}
 		}
 	}
-
-
-
-	// shorten it bu having array index for blocks
-
 }

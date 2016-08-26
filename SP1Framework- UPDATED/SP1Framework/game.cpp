@@ -21,11 +21,15 @@ bool    g_abKeyPressed[K_COUNT];
 extern bool	paused = false;
 bool completedlevel1 = false;
 bool completedlevel2 = false;
+bool completedlevel3 = false;
+bool completedlevel3_S2 = false;
 
 
 // Game specific variables here
 SGameChar  g_sChar;
 SGameChar	g_sChar2;
+SGameChar g_sChar3;
+SGameChar g_sChar3_Stage2;
 SGameChar	g_sArrow;
 
 EGAMESTATES g_eGameState = S_SPLASHSCREEN;
@@ -64,10 +68,16 @@ void init(void)
 		g_sChar2.m_cLocation.Y = 4;
 		g_sChar2.bPassable = false;
 
+		g_sChar3.m_cLocation.X = 12;
+		g_sChar3.m_cLocation.Y = 5;
+		g_sChar3.bPassable = false;
+
+		g_sChar3_Stage2.m_cLocation.X = 2;
+		g_sChar3_Stage2.m_cLocation.Y = 5;
+		g_sChar3_Stage2.bPassable = false;
 
 	g_sArrow.m_cLocation.X = g_Console.getConsoleSize().X / 2 - 15;
 	g_sArrow.m_cLocation.Y = 3;
-
 
 	// sets the width, height and the font name to use in the console
 	g_Console.setConsoleFont(2, 39, L"Arial");
@@ -146,6 +156,10 @@ void update(double dt)
 		break;
 	case S_GAME1: gameplay(); // gameplay logic when we are in the game
 		break;
+	case S_GAME2: gameplay();
+		break;
+	case S_GAME2_S2: gameplay();
+		break;
 	case S_MENU: menu(); // menu for game
 		break;
 	case S_STORY: Story(); // story for game
@@ -178,13 +192,20 @@ void gameplay()            // gameplay logic
 		end1();
 		moveCharacter1();
 	}
-	else
+	else if (!completedlevel2)
 	{
-		if (!completedlevel2)
-		{
-			end2();
-			moveCharacter2();
-		}
+		end2();
+		moveCharacter2();
+	}
+	else if (!completedlevel3)
+	{
+		end3();
+		moveCharacter3();
+	}
+	else if (!completedlevel3_S2)
+	{
+		end3_S2();
+		moveCharacter3_S2();
 	}
 	Restart();
 	timecheck();
@@ -248,6 +269,10 @@ void render()
 	case S_GAME: renderGame();
 		break;
 	case S_GAME1: renderGame1();
+		break;
+	case S_GAME2: renderGame2();
+		break;
+	case S_GAME2_S2: renderGame2_Stage2();
 		break;
 	case S_MENU: renderMenu();
 		break;
@@ -337,16 +362,29 @@ void renderStory()
 
 void renderGame()
 {
-
-		renderMap1();        // renders the map to the buffer first
-		characterlevel1();  // renders the character into the buffer
-		renderplayerandgametime();
+	renderMap1();        // renders the map to the buffer first
+	characterlevel1();  // renders the character into the buffer
+	renderplayerandgametime();
 }
 
 void renderGame1()
 {
 	renderMap2();
 	characterlevel2();
+	renderplayerandgametime();
+}
+
+void renderGame2()
+{
+	renderMap3();
+	characterlevel3();
+	renderplayerandgametime();
+}
+
+void renderGame2_Stage2()
+{
+	renderMap3_Stage2();
+	characterlevel3_S2();
 
 	renderplayerandgametime();
 }
@@ -372,6 +410,24 @@ void renderMap2()
 	if (!paused)
 	{
 		Level2();
+		GameInstruction();
+	}
+}
+
+void renderMap3()
+{
+	if (!paused)
+	{
+		Level3_Stage1();
+		GameInstruction();
+	}
+}
+
+void renderMap3_Stage2()
+{
+	if (!paused)
+	{
+		Level3_Stage2();
 		GameInstruction();
 	}
 }
@@ -403,11 +459,11 @@ void renderFramerate()
 		ss.str("");
 		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
 		c.Y = 1;
-		g_Console.writeToBuffer(c, ss.str());
+		//g_Console.writeToBuffer(c, ss.str());
 		ss.str("");
 		ss << "x location: " << g_sChar2.m_cLocation.X << " & y location: " << g_sChar2.m_cLocation.Y;
 		c.Y = 1;
-		g_Console.writeToBuffer(c, ss.str());
+		//g_Console.writeToBuffer(c, ss.str());
 	}
 	else
 	{
@@ -432,11 +488,11 @@ void renderFramerate()
 		ss.str("");
 		ss << "x location: " << g_sChar.m_cLocation.X << " & y location: " << g_sChar.m_cLocation.Y;
 		c.Y = 1;
-		g_Console.writeToBuffer(c, ss.str());
+		//g_Console.writeToBuffer(c, ss.str());
 		ss.str("");
 		ss << "x location: " << g_sChar2.m_cLocation.X << " & y location: " << g_sChar2.m_cLocation.Y;
 		c.Y = 1;
-		g_Console.writeToBuffer(c, ss.str());
+		//g_Console.writeToBuffer(c, ss.str());
 	}
 }
 
