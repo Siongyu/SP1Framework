@@ -11,8 +11,7 @@
 #include <iomanip>
 #include <sstream>
 #include "highscore.h"
-#include "restart1.h"
-#include "restart2.h"
+#include "restart.h"
 #include "Pause.h"
 
 double  g_dElapsedTime;
@@ -71,7 +70,7 @@ void init(void)
 
 
 	// sets the width, height and the font name to use in the console
-	g_Console.setConsoleFont(2, 39, L"Consolas");
+	g_Console.setConsoleFont(2, 39, L"Arial");
 }
 
 //--------------------------------------------------------------
@@ -176,7 +175,6 @@ void gameplay()            // gameplay logic
 {
 	if (!completedlevel1)
 	{
-		Restart1();
 		end1();
 		moveCharacter1();
 	}
@@ -184,11 +182,11 @@ void gameplay()            // gameplay logic
 	{
 		if (!completedlevel2)
 		{
-			Restart2();
 			end2();
 			moveCharacter2();
 		}
 	}
+	Restart();
 	timecheck();
 	Pause();
 	// sound can be played here too.

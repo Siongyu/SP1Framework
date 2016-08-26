@@ -31,13 +31,13 @@ SGameBlock2 sEndZoneIndex2[] =
 {
 	{ { 4, 4 }, 'a', 1, false }, // (0)endzone 1
 	{ { 4, 7 }, 'b', 2, false },// (1)endzone 2
-	{ { 26, 8 }, 'c', 3, false },// (2)endzone 3
-	{ { 24, 12 }, 'd', 4, false },// (3)endzone 4
+	{ { 26, 8 }, 'c', 6, false },// (2)endzone 3
+	{ { 24, 12 }, 'd', 3, false },// (3)endzone 4
 	{ { 34, 9 }, 'e', 5, false }, // (4)endzone 5
-	{ { 37, 14 }, 'f', 6, false }, // (5)endzone 6
-	{ { 26, 13 }, 'g', 7, false }, // (6)endzone 7
-	{ { 24, 14 }, 'h', 8,false }, // (7)endzone 8
-	{ { 4, 10 }, 'i', 9,false } // (8) endzone 9
+	{ { 37, 14 }, 'f', 4, false }, // (5)endzone 6
+	{ { 26, 13 }, 'g', 9, false }, // (6)endzone 7
+	{ { 24, 14 }, 'h', 7,false }, // (7)endzone 8
+	{ { 4, 10 }, 'i', 8,false } // (8) endzone 9
 
 };
 
@@ -125,8 +125,9 @@ void end2()
 		}
 	}
 
+	//sEndZoneIndex2[0].bPassable && sEndZoneIndex2[1].bPassable && sEndZoneIndex2[2].bPassable && sEndZoneIndex2[3].bPassable && sEndZoneIndex2[4].bPassable && sEndZoneIndex2[5].bPassable && sEndZoneIndex2[6].bPassable && sEndZoneIndex2[7].bPassable && sEndZoneIndex2[8].bPassable
 
-	if (sEndZoneIndex2[0].bPassable && sEndZoneIndex2[1].bPassable && sEndZoneIndex2[2].bPassable && sEndZoneIndex2[3].bPassable && sEndZoneIndex2[4].bPassable && sEndZoneIndex2[5].bPassable && sEndZoneIndex2[6].bPassable && sEndZoneIndex2[7].bPassable && sEndZoneIndex2[8].bPassable)
+	if ((sBlockIndex2[0].m_cLocate.X == sEndZoneIndex2[0].m_cLocate.X) && (sBlockIndex2[1].m_cLocate.X == sEndZoneIndex2[1].m_cLocate.X) && (sBlockIndex2[2].m_cLocate.X == sEndZoneIndex2[3].m_cLocate.X) && (sBlockIndex2[3].m_cLocate.X == sEndZoneIndex2[5].m_cLocate.X) && (sBlockIndex2[4].m_cLocate.X == sEndZoneIndex2[4].m_cLocate.X) && (sBlockIndex2[5].m_cLocate.X == sEndZoneIndex2[2].m_cLocate.X) && (sBlockIndex2[6].m_cLocate.X == sEndZoneIndex2[7].m_cLocate.X) && (sBlockIndex2[7].m_cLocate.Y == sEndZoneIndex2[8].m_cLocate.Y) && (sBlockIndex2[8].m_cLocate.X == sEndZoneIndex2[6].m_cLocate.X))
 	{
 		completedlevel2 = true;
 		highScore(to_string(GameTime), to_string(playersteps));

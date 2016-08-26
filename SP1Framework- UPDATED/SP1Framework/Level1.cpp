@@ -141,7 +141,8 @@ void end1()
 				sEndZoneIndex[ezi].bPassable = true;
 				break;
 			}
-			if (sEndZoneIndex[0].bPassable && sEndZoneIndex[1].bPassable && sEndZoneIndex[2].bPassable && sEndZoneIndex[3].bPassable && sEndZoneIndex[4].bPassable && sEndZoneIndex[5].bPassable)
+			//&& sEndZoneIndex[1].bPassable && sEndZoneIndex[2].bPassable && sEndZoneIndex[3].bPassable && sEndZoneIndex[4].bPassable && sEndZoneIndex[5].bPassable
+			if (sEndZoneIndex[0].bPassable)
 			{
 				completedlevel1 = true;
 				g_eGameState = S_GAME1;

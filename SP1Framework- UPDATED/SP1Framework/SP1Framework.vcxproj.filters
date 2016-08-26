@@ -60,16 +60,13 @@
     <ClCompile Include="Level2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="restart1.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="restart2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="moveCharacter2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="moveCharacter1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="restart.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -110,10 +107,7 @@
     <ClInclude Include="level2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="restart1.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="restart2.h">
+    <ClInclude Include="restart.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
